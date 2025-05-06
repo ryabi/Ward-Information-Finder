@@ -1,4 +1,4 @@
-#Ward Information Finder
+# Ward Information Finder
 
 "Ward Information Finder" is a learning project aimed at building a backend-focused web application that helps users search for municipal ward details in Nepal. Built with Django Rest Framework, it features secure JWT-based authentication, dynamic filtering by location (Province, District, Local Level, Ward), and a clean API interface.
 
