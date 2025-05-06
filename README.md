@@ -6,20 +6,21 @@ This project is ongoing and primarily focused on backend development practice.
 
 ## Features
 
-JWT Authentication & Authorization
-Filterable Ward Search:
+-JWT Authentication & Authorization
+-Filterable Ward Search:
    Province → District → Local Level → Ward
-Modular Django app structure with RESTful endpoints
-SQLite database with populated Nepali administrative divisions (for demo)
+-Modular Django app structure with RESTful endpoints
+-SQLite database with populated Nepali administrative divisions (for demo)
 
 ## Future Plans
 
-Google OAuth 2.0 login
-Google Maps integration for geolocation of wards
-More detailed locality information (population, services, facilities)
-Docker-based setup for easy deployment
-API documentation with Swagger or Redoc
- Installation & Setup
+-Google OAuth 2.0 login
+-Google Maps integration for geolocation of wards
+-More detailed locality information (population, services, facilities)
+-Docker-based setup for easy deployment
+-API documentation with Swagger or Redoc
+
+## Installation & Setup
 
 > Requires Python 3.8+, pip, and virtualenv (recommended)
 
