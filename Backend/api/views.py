@@ -39,6 +39,9 @@ class Candidate(APIView):
                 ward__ward_no=ward_no
             ).select_related('ward__municipality__district__province')
         
+        # print(query_sets.query)
+        # for candidate in query_sets:
+        #     print(candidate.ward.ward_no)
         serializer=candidateSerializer(query_sets,many=True)
        
         return Response(serializer.data,status=status.HTTP_200_OK)

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Search, Building, Landmark } from 'lucide-react';
+import { MapPin, Search, Building, Landmark, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Home: React.FC = () => {
@@ -9,20 +9,29 @@ const Home: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Welcome Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Welcome, {user?.first_name} {user?.last_name}!
-        </h1>
-        <p className="mt-2 text-gray-600">
-          Access local government services and information all in one place.
-        </p>
+      <div className="mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Welcome, {user?.first_name} {user?.last_name}!
+          </h1>
+          <p className="mt-2 text-gray-600">
+            Access local government services and information all in one place.
+          </p>
+        </div>
+        <Link
+          to="/profile"
+          className="flex items-center px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
+        >
+          <User className="w-4 h-4 mr-2" />
+          View Profile
+        </Link>
       </div>
 
       {/* Feature Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Find Local Government Card */}
         <Link
-          to="/ward-members"
+          to="/ward-search"
           className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
         >
           <div className="p-6">
@@ -33,11 +42,11 @@ const Home: React.FC = () => {
               Find Your Local Government
             </h3>
             <p className="text-gray-600">
-              Connect with your local government representatives and access important services.
+              Search and connect with your local ward members and access important services.
             </p>
           </div>
           <div className="px-6 py-3 bg-gray-50">
-            <span className="text-sm font-medium text-blue-600">Learn More →</span>
+            <span className="text-sm font-medium text-blue-600">Search Now →</span>
           </div>
         </Link>
 

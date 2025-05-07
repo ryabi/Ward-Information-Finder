@@ -1,16 +1,23 @@
 import { LoginCredentials, RegisterData, User } from '../types/auth';
 import { apiClient } from './apiClient';
+import { AxiosResponse } from 'axios';
 
 // Login user
 export const loginUser = async (credentials: LoginCredentials): Promise<User> => {
   try {
     const response = await apiClient.post('/auth/login/', credentials);
-    const { token, user } = response.data;
+    console.log(response.data)
+    const { access_token: token, user } = response.data;
+
+    
+    console.log(token, user);
+    
     
     // Store the token in localStorage
     localStorage.setItem('token', token);
-    
+
     return user;
+
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
@@ -20,15 +27,15 @@ export const loginUser = async (credentials: LoginCredentials): Promise<User> =>
 };
 
 // Register user
-export const registerUser = async (data: RegisterData): Promise<User> => {
+export const registerUser = async (data: RegisterData): Promise<AxiosResponse> => {
   try {
     const response = await apiClient.post('/auth/register/', data);
-    const { token, user } = response.data;
     
-    // Store the token in localStorage
-    localStorage.setItem('token', token);
     
-    return user;
+    // // Store the token in localStorage
+    // localStorage.setItem('token', token);
+    
+    return response;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);

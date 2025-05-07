@@ -4,7 +4,7 @@ import { WardMember, MunicipalityMember, Ward } from '../types/member';
 // Ward Members
 export const getWardMembers = async (): Promise<WardMember[]> => {
   try {
-    const response = await apiClient.get('/ward-members/');
+    const response = await apiClient.get('/candidate/');
     return response.data;
   } catch (error) {
     console.error('Error fetching ward members:', error);

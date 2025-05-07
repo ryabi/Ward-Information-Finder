@@ -9,6 +9,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import WardSearch from './pages/WardSearch';
 import WardMembers from './pages/WardMembers';
 import WardMemberDetail from './pages/WardMemberDetail';
 import LocationFinder from './pages/LocationFinder';
@@ -41,6 +42,7 @@ function App() {
           >
             <Route index element={<Home />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="ward-search" element={<WardSearch />} />
             <Route path="ward-members" element={<WardMembers />} />
             <Route path="ward-members/:id" element={<WardMemberDetail />} />
             <Route path="location-finder" element={<LocationFinder />} />

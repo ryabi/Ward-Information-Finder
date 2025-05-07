@@ -26,17 +26,23 @@ class registerSerializer(serializers.ModelSerializer):
         # del attrs['re_password']
         return attrs   
         
-class loginSerializer(serializers.ModelSerializer):
+class loginSerializer(serializers.Serializer):
     username=serializers.CharField()
     password=serializers.CharField(write_only=True)  
     
-    full_name=serializers.CharField(read_only=True)
-    access_token=serializers.CharField(max_length=256,read_only=True)
-    refresh_token=serializers.CharField(max_length=256,read_only=True)
     
-    class Meta:
-        model=User
-        fields=['username','password','full_name','access_token','refresh_token']
+    # i don't need it as i'm not using model serializer.
+    # isAdmin = serializers.BooleanField(read_only=True)
+    # full_name=serializers.CharField(read_only=True)
+    # access_token=serializers.CharField(max_length=256,read_only=True)
+    # refresh_token=serializers.CharField(max_length=256,read_only=True)
+    
+    # class Meta:
+    #     model=User
+    #     fields=['username','password','full_name','isAdmin','access_token','refresh_token']
+    
+    # def get_isAdmin(self, obj):
+    #     return obj.is_staff
         
     def validate(self, attrs):
         username=attrs.get('username')
@@ -47,20 +53,25 @@ class loginSerializer(serializers.ModelSerializer):
         if not user :
             raise AuthenticationFailed("Invalide Username or Password, TRY AGAIN")
         
-        user_token=user.get_token()  
-        return {
-            'username':user.username,
-            'full_name':user.get_full_name,
-            'access_token':user_token.get('access'),
-            'refresh_token':user_token.get('refresh'),
+        token=user.get_token() 
+        self.user=user 
+        self.token=token
+        
+        return attrs
+    
+    def to_representation(self, instance):
+         return {
+            'username':self.user.username,
+            'access_token':self.token.get('access'),
+            'refresh_token':self.token.get('refresh'),
         }
-   
-   
+        
+        
 class userSerializer(serializers.ModelSerializer):
     isAdmin = serializers.SerializerMethodField()
     class Meta:
         model=User
-        fields=[ 'id','first_name', 'last_name','username','email','isAdmin']
+        fields=[ 'id','first_name', 'last_name','username','email','isAdmin','phone_number','province','district','date_of_birth','ward_no','municipality']
          
     def get_isAdmin(self, obj):
         return obj.is_staff

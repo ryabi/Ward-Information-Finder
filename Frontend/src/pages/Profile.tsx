@@ -1,10 +1,12 @@
 import React from 'react';
+import { getCurrentUser } from '../services/authService';
 import { useAuth } from '../contexts/AuthContext';
 import { User, Mail, Phone, MapPin, Calendar } from 'lucide-react';
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
 
+  const { user } = useAuth();
+  
   if (!user) {
     return null;
   }
@@ -54,7 +56,7 @@ const Profile: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Location</p>
                   <p className="text-gray-900">
-                    {user.municipality}, Ward {user.ward_no || 'N/A'}
+                    {user.municipality},{user.ward_no || 'N/A'}
                   </p>
                 </div>
               </div>

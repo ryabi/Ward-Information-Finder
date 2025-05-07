@@ -32,18 +32,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        const userData = await getCurrentUser();
-        setUser(userData);
-      } catch (err) {
-        console.error('Failed to fetch user:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const initAuth = async () => {
+    try {
+      const userData = await getCurrentUser();
+      setUser(userData);
+    } catch (err) {
+      console.error('Failed to fetch user:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     initAuth();
   }, []);
 
@@ -51,8 +52,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const userData = await loginUser(credentials);
-      setUser(userData);
+       const userData = await loginUser(credentials);
+      await initAuth();
+      // setUser(userData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to login');
       throw err;
@@ -65,9 +67,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const userData = await registerUser(data);
-      setUser(userData);
-    } catch (err) {
+      const response = await registerUser(data);
+      console.log(response.status)
+      if (response.status === 201) {
+        // Registration successful, redirect to login page
+        alert(response.data.message);
+      // setUser(userData);
+      return
+    } throw new Error('Unexpected response from server');
+  }catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to register');
       throw err;
     } finally {

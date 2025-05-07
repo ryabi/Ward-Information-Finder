@@ -27,6 +27,9 @@ const Login: React.FC = () => {
     setFormError(null);
     
     try {
+      // console.log(credentials)
+      // const user = await login(credentials);
+      // await login(credentials);
       await login(credentials);
       navigate('/');
     } catch (error) {

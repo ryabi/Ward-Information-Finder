@@ -81,7 +81,7 @@ const Register: React.FC = () => {
     
     try {
       await register(formData);
-      navigate('/');
+      navigate('/login');
     } catch (error: any) {
       if (error.response && error.response.data) {
         const backendErrors = error.response.data;
