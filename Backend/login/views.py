@@ -20,9 +20,6 @@ class Register(APIView):
         serailizer=self.serializer_class(data=data)
         if serailizer.is_valid(raise_exception=True):       # here is_valid() calls validation function from serializer.
             serailizer.save()
-            # user=serailizer.instance
-            # print(user)
-            print('Done')
             return Response({
                 "message": "Registration successful. Please log in.",
             },status=status.HTTP_201_CREATED)

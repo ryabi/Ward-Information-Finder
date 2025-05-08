@@ -1,22 +1,11 @@
-export interface Address {
-  country: string;
-  municipality: string;
-  placeName: string;
-  wardNo: string;
-}
-
 export interface WardMember {
   id: number;
-  firstName: string;
-  lastName: string;
-  position: string;
-  email: string;
-  phoneNumber: string;
-  address: Address;
-  photo: string;
-  biography: string;
-  dateOfBirth: string;
-  appointmentDate: string;
+  name: string;
+  gender: 'Male' | 'Female' | 'Other';
+  post: string;
+  bio?: string | null;
+  email?: string;
+  phone?: string;
 }
 
 export interface MunicipalityMember {
@@ -44,4 +33,11 @@ export interface Ward {
     latitude: number;
     longitude: number;
   };
+}
+
+export interface Address {
+  country: string;
+  municipality: string;
+  placeName: string;
+  wardNo: string;
 }

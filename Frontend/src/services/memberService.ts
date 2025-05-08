@@ -1,10 +1,27 @@
 import { apiClient } from './apiClient';
 import { WardMember, MunicipalityMember, Ward } from '../types/member';
 
+interface SearchParams {
+  province?: string | null;
+  district?: string | null;
+  municipality?: string | null;
+  ward_no?: string | null;
+}
+
+interface WardMembersResponse {
+  candidates: WardMember[];
+  districts: Array<{id: number; name: string}>;
+  municipalities: Array<{id: number; name: string; type: string}>;
+  wards: Array<{id: number; ward_no: number}>;
+}
+
 // Ward Members
-export const getWardMembers = async (): Promise<WardMember[]> => {
+export const getWardMembers = async (params?: SearchParams): Promise<WardMembersResponse> => {
   try {
-    const response = await apiClient.get('/candidate/');
+    const queryString = params 
+      ? `?${new URLSearchParams(params as Record<string, string>).toString()}`
+      : '';
+    const response = await apiClient.get(`/candidate/${queryString}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching ward members:', error);

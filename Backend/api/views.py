@@ -33,13 +33,13 @@ class Candidate(APIView):
         municipality=request.query_params.get('municipality')
         ward_no=request.query_params.get('ward_no')
         query_sets=Candidates.objects.filter(
-          ward__municipality__district__province__name=province,
+                ward__municipality__district__province__name=province,
                 ward__municipality__district__name=district,
                 ward__municipality__name=municipality,
                 ward__ward_no=ward_no
             ).select_related('ward__municipality__district__province')
         
-        # print(query_sets.query)
+        print(query_sets.query)
         # for candidate in query_sets:
         #     print(candidate.ward.ward_no)
         serializer=candidateSerializer(query_sets,many=True)

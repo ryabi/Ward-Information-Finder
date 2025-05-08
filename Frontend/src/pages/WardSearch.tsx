@@ -28,7 +28,14 @@ const WardSearch: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const queryParams = new URLSearchParams(formData).toString();
+    const cleanedParams: Record<string, string> = {
+      province: formData.province.trim(),
+      district: formData.district.trim(),
+      municipality: formData.municipality.trim(),
+      ward_no: formData.ward_no.trim(),
+    };
+
+    const queryParams = new URLSearchParams(cleanedParams).toString();
     navigate(`/ward-members?${queryParams}`);
   };
 
