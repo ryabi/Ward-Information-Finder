@@ -36,6 +36,7 @@ class Municipality(models.Model):
         return f"{self.name} ({self.get_type_display()})"
 
 class Ward(models.Model):
+    
     ward_no = models.PositiveIntegerField()
     municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE, related_name='wards')
     info = models.TextField(blank=True, null=True)  # or use JSONField if you want structured info
@@ -50,6 +51,7 @@ class Candidates(models.Model):
     name=models.CharField(max_length=256)
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
     post=models.CharField(max_length=50)
+    email=models.EmailField(default=None)
     ward=models.ForeignKey(Ward, on_delete=models.CASCADE, related_name='candidates')
     bio = models.TextField(blank=True, null=True)
     class Meta:
