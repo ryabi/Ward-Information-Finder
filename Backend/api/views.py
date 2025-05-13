@@ -14,8 +14,10 @@ class Candidate(APIView):
         candidate=request.data
         serializer=candidateSerializer(data=candidate)
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(data=serializer.data)
+            serializer.save() 
+            return Response({
+                "message":"Candidate Added sucessfully"
+            },status=status.HTTP_201_CREATED)
         else :
             return Response(data=serializer.errors,status=401)  
     
@@ -39,9 +41,9 @@ class Candidate(APIView):
                 ward__ward_no=ward_no
             ).select_related('ward__municipality__district__province')
         
-        print(query_sets.query)
+        # print(query_sets.query)
         # for candidate in query_sets:
-        #     print(candidate.ward.ward_no)
+        #     print(candidate.__all__)
         serializer=candidateSerializer(query_sets,many=True)
        
         return Response(serializer.data,status=status.HTTP_200_OK)

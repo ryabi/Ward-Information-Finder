@@ -3,9 +3,10 @@ export interface WardMember {
   name: string;
   gender: 'Male' | 'Female' | 'Other';
   post: string;
+  email: string;
   bio?: string | null;
-  email?: string;
-  phone?: string;
+  municipality?:string;
+  ward?: number;
 }
 
 export interface MunicipalityMember {

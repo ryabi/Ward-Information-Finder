@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Edit, Trash2, AlertCircle, Search } from 'lucide-react';
 import { getWardMembers, deleteWardMember } from '../../services/memberService';
 import { WardMember } from '../../types/member';
@@ -14,18 +13,16 @@ const AdminWardMembers: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
-  const navigate = useNavigate();
   
   // Filter members based on search query
-  const filteredMembers = wardMembers.filter(member => {
+  const filteredMembers = wardMembers?.filter(member => {
     const searchLower = searchQuery.toLowerCase();
     return (
-      member.firstName.toLowerCase().includes(searchLower) ||
-      member.lastName.toLowerCase().includes(searchLower) ||
-      member.position.toLowerCase().includes(searchLower) ||
-      member.address.wardNo.toLowerCase().includes(searchLower)
+      member.name.toLowerCase().includes(searchLower) ||
+      member.post.toLowerCase().includes(searchLower) ||
+      member.email.toLowerCase().includes(searchLower)
     );
-  });
+  }) || [];
 
   useEffect(() => {
     fetchMembers();
@@ -34,8 +31,8 @@ const AdminWardMembers: React.FC = () => {
   const fetchMembers = async () => {
     try {
       setLoading(true);
-      const data = await getWardMembers();
-      setWardMembers(data);
+      const response = await getWardMembers();
+      setWardMembers(response.candidates);
     } catch (err) {
       console.error('Failed to fetch ward members:', err);
       setError('Failed to load ward members. Please try again later.');
@@ -143,19 +140,6 @@ const AdminWardMembers: React.FC = () => {
             <div className="ml-3">
               <p className="text-sm text-red-700">{error}</p>
             </div>
-            <div className="ml-auto pl-3">
-              <div className="-mx-1.5 -my-1.5">
-                <button
-                  onClick={() => setError(null)}
-                  className="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                  <span className="sr-only">Dismiss</span>
-                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -205,16 +189,22 @@ const AdminWardMembers: React.FC = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Member
+                    Name
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Position
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ward
+                    Email
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact
+                    Gender
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Municipality
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Ward
                   </th>
                   <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -225,41 +215,22 @@ const AdminWardMembers: React.FC = () => {
                 {filteredMembers.map((member) => (
                   <tr key={member.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-100">
-                          {member.photo ? (
-                            <img 
-                              src={member.photo} 
-                              alt={`${member.firstName} ${member.lastName}`}
-                              className="h-10 w-10 object-cover"
-                            />
-                          ) : (
-                            <div className="h-10 w-10 flex items-center justify-center bg-teal-100 text-teal-500">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {member.firstName} {member.lastName}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {member.email}
-                          </div>
-                        </div>
-                      </div>
+                      <div className="text-sm font-medium text-gray-900">{member.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{member.position}</div>
+                      <div className="text-sm text-gray-900">{member.post}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Ward {member.address.wardNo}</div>
-                      <div className="text-sm text-gray-500">{member.address.municipality}</div>
+                      <div className="text-sm text-gray-900">{member.email}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {member.phoneNumber}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{member.gender}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{member.municipality}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{member.ward}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       {showDeleteConfirm === member.id ? (

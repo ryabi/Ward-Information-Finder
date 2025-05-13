@@ -44,9 +44,9 @@ const Header: React.FC = () => {
               Location Finder
             </Link>
             
-            {isAdmin && (
+            {/* {isAdmin && (
               <div className="relative group">
-                <button className="flex items-center hover:text-teal-200 transition-colors duration-200">
+                <button className="flex items-center hover:text-teal-400 transition-colors duration-400">
                   Admin
                   <ChevronDown size={16} className="ml-1" />
                 </button>
@@ -71,7 +71,43 @@ const Header: React.FC = () => {
                   </Link>
                 </div>
               </div>
+            )} */}
+
+
+
+
+            {isAdmin && (
+                      <div className="relative group">
+                        <button className="flex items-center hover:text-teal-200 transition-colors duration-200">
+                          Admin
+                          <ChevronDown size={16} className="ml-1" />
+                        </button>
+                        {/* Keep the dropdown inside the same parent */}
+                        <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200">
+                          <Link 
+                            to="/admin" 
+                            className="block px-4 py-2 text-gray-800 hover:bg-teal-50"
+                          >
+                            Dashboard
+                          </Link>
+                          <Link 
+                            to="/admin/ward-members" 
+                            className="block px-4 py-2 text-gray-800 hover:bg-teal-50"
+                          >
+                            Manage Ward Members
+                          </Link>
+                          <Link 
+                            to="/admin/municipality-members" 
+                            className="block px-4 py-2 text-gray-800 hover:bg-teal-50"
+                          >
+                            Manage Municipality Members
+                          </Link>
+                        </div>
+                      </div>
             )}
+
+
+
             
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
