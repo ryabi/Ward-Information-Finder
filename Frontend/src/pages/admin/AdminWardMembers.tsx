@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, AlertCircle, Search } from 'lucide-react';
-import { getWardMembers, deleteWardMember } from '../../services/memberService';
+import { useNavigate } from 'react-router-dom';
+import { getWardMembers, deleteWardMember, createWardMember } from '../../services/memberService';
 import { WardMember } from '../../types/member';
 import MemberForm from '../../components/common/MemberForm';
 
 const AdminWardMembers: React.FC = () => {
+  const navigate = useNavigate();
   const [wardMembers, setWardMembers] = useState<WardMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,15 +46,11 @@ const AdminWardMembers: React.FC = () => {
   const handleAddMember = async (memberData: any) => {
     try {
       setSubmitting(true);
-      // Here you would normally make an API call to create the member
-      // const newMember = await createWardMember(memberData);
+      // Make the actual API call to create the member
+      await createWardMember(memberData);
       
-      // Simulate API call for demo purposes
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Refresh the list of members
-      await fetchMembers();
-      setShowAddForm(false);
+      // Navigate to admin dashboard after successful creation
+      navigate('/admin');
     } catch (err) {
       console.error('Failed to add ward member:', err);
       setError('Failed to add member. Please try again.');

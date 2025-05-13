@@ -18,6 +18,13 @@ interface MemberFormProps {
   title: string;
 }
 
+const POSITION_OPTIONS = [
+  { value: 'Chairperson', label: 'Chairperson' },
+  { value: 'Vice-Chairperson', label: 'Vice-Chairperson' },
+  { value: 'Secratary', label: 'Secretary' },
+  { value: 'Member', label: 'Member' }
+];
+
 const MemberForm: React.FC<MemberFormProps> = ({ 
   initialData, 
   onSubmit, 
@@ -147,8 +154,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
             <label htmlFor="post" className="block text-sm font-medium text-gray-700 mb-1">
               Position <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <select
               id="post"
               name="post"
               value={formData.post}
@@ -156,7 +162,14 @@ const MemberForm: React.FC<MemberFormProps> = ({
               className={`block w-full py-2 px-3 border ${
                 errors.post ? 'border-red-300' : 'border-gray-300'
               } rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500`}
-            />
+            >
+              <option value="">Select a position</option>
+              {POSITION_OPTIONS.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             {errors.post && (
               <p className="mt-1 text-sm text-red-600">{errors.post}</p>
             )}

@@ -50,7 +50,9 @@ class Ward(models.Model):
 class Candidates(models.Model):
     name=models.CharField(max_length=256)
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
-    post=models.CharField(max_length=50)
+    post=models.CharField(max_length=50,
+                          choices=[('Chairperson','chairperson'),('Vice-Chairperson','vice-chairperson'),('Secratary','secratary'),('Member','member')]
+                          )
     email=models.EmailField(default=None)
     ward=models.ForeignKey(Ward, on_delete=models.CASCADE, related_name='candidates')
     bio = models.TextField(blank=True, null=True)

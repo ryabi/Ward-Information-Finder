@@ -41,7 +41,7 @@ export const getWardMemberById = async (id: number): Promise<WardMember> => {
 
 export const createWardMember = async (memberData: Omit<WardMember, 'id'>): Promise<WardMember> => {
   try {
-    const response = await apiClient.post('/ward-members/', memberData);
+    const response = await apiClient.post('/candidate/', memberData);
     return response.data;
   } catch (error) {
     console.error('Error creating ward member:', error);
