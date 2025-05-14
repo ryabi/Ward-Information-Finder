@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, AlertCircle, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, AlertCircle, Search, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getWardMembers, deleteWardMember, createWardMember } from '../../services/memberService';
 import { WardMember } from '../../types/member';
 import MemberForm from '../../components/common/MemberForm';
+
+interface SearchForm {
+  province: string;
+  district: string;
+  municipality: string;
+  ward_no: string;
+}
 
 const AdminWardMembers: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +22,12 @@ const AdminWardMembers: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
+  const [locationFilter, setLocationFilter] = useState<SearchForm>({
+    province: '',
+    district: '',
+    municipality: '',
+    ward_no: '',
+  });
   
   // Filter members based on search query
   const filteredMembers = wardMembers?.filter(member => {
@@ -30,11 +43,23 @@ const AdminWardMembers: React.FC = () => {
     fetchMembers();
   }, []);
 
-  const fetchMembers = async () => {
+  const fetchMembers = async (params?: SearchForm) => {
     try {
       setLoading(true);
-      const response = await getWardMembers();
-      setWardMembers(response.candidates);
+      if (params) {
+        // Convert all params to lowercase
+        const lowercaseParams = {
+          province: params.province.toLowerCase(),
+          district: params.district.toLowerCase(),
+          municipality: params.municipality.toLowerCase(),
+          ward_no: params.ward_no.toLowerCase()
+        };
+        const response = await getWardMembers(lowercaseParams);
+        setWardMembers(response.candidates);
+      } else {
+        const response = await getWardMembers();
+        setWardMembers(response.candidates);
+      }
     } catch (err) {
       console.error('Failed to fetch ward members:', err);
       setError('Failed to load ward members. Please try again later.');
@@ -141,6 +166,121 @@ const AdminWardMembers: React.FC = () => {
           </div>
         </div>
       )}
+      
+      {/* Location Filter */}
+      <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
+        <div className="flex items-center mb-4">
+          <Filter className="h-5 w-5 text-teal-500 mr-2" />
+          <h3 className="text-lg font-medium text-gray-800">Filter by Location</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
+              Province
+            </label>
+            <input
+              type="text"
+              id="province"
+              name="province"
+              value={locationFilter.province}
+              onChange={(e) => setLocationFilter(prev => ({
+                ...prev,
+                province: e.target.value
+              }))}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"
+              placeholder="Enter province"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="district" className="block text-sm font-medium text-gray-700 mb-1">
+              District
+            </label>
+            <input
+              type="text"
+              id="district"
+              name="district"
+              value={locationFilter.district}
+              onChange={(e) => setLocationFilter(prev => ({
+                ...prev,
+                district: e.target.value
+              }))}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"
+              placeholder="Enter district"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="municipality" className="block text-sm font-medium text-gray-700 mb-1">
+              Municipality
+            </label>
+            <input
+              type="text"
+              id="municipality"
+              name="municipality"
+              value={locationFilter.municipality}
+              onChange={(e) => setLocationFilter(prev => ({
+                ...prev,
+                municipality: e.target.value
+              }))}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"
+              placeholder="Enter municipality"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="ward_no" className="block text-sm font-medium text-gray-700 mb-1">
+              Ward Number
+            </label>
+            <input
+              type="text"
+              id="ward_no"
+              name="ward_no"
+              value={locationFilter.ward_no}
+              onChange={(e) => setLocationFilter(prev => ({
+                ...prev,
+                ward_no: e.target.value
+              }))}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"
+              placeholder="Enter ward number"
+            />
+          </div>
+        </div>
+
+        <div className="mt-4 flex justify-end space-x-3">
+          <button
+            onClick={() => {
+              setLocationFilter({
+                province: '',
+                district: '',
+                municipality: '',
+                ward_no: '',
+              });
+              fetchMembers();
+            }}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Clear Filters
+          </button>
+          <button
+            onClick={() => {
+              const params = {
+                province: locationFilter.province.trim(),
+                district: locationFilter.district.trim(),
+                municipality: locationFilter.municipality.trim(),
+                ward_no: locationFilter.ward_no.trim()
+              };
+              if (params.province && params.district && params.municipality && params.ward_no) {
+                fetchMembers(params);
+              }
+            }}
+            className="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700"
+          >
+            Apply Filters
+          </button>
+        </div>
+      </div>
       
       {/* Search */}
       <div className="mb-6">

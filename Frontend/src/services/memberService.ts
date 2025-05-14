@@ -15,6 +15,57 @@ interface WardMembersResponse {
   wards: Array<{id: number; ward_no: number}>;
 }
 
+export interface Province {
+  id: number;
+  name: string;
+}
+
+export interface District {
+  id: number;
+  name: string;
+  province: number;
+}
+
+export interface Municipality {
+  id: number;
+  name: string;
+  type: string;
+  district: number;
+}
+
+// Fetch all provinces
+export const getProvinces = async (): Promise<Province[]> => {
+  try {
+    const response = await apiClient.get('/provinces/');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching provinces:', error);
+    throw error;
+  }
+};
+
+// Fetch districts by province
+export const getDistrictsByProvince = async (provinceId: number): Promise<District[]> => {
+  try {
+    const response = await apiClient.get(`/districts/by-province/${provinceId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching districts:', error);
+    throw error;
+  }
+};
+
+// Fetch municipalities by district
+export const getMunicipalitiesByDistrict = async (districtId: number): Promise<Municipality[]> => {
+  try {
+    const response = await apiClient.get(`/municipalities/by-district/${districtId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching municipalities:', error);
+    throw error;
+  }
+};
+
 // Ward Members
 export const getWardMembers = async (params?: SearchParams): Promise<WardMembersResponse> => {
   try {
