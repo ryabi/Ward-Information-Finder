@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Search, Building, Landmark, User } from 'lucide-react';
+import { MapPin, Search, Building, Landmark, User, Video } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Home: React.FC = () => {
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Feature Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Find Local Government Card */}
         <Link
           to="/ward-search"
@@ -89,6 +89,27 @@ const Home: React.FC = () => {
           </div>
           <div className="px-6 py-3 bg-gray-50">
             <span className="text-sm font-medium text-amber-600">Explore →</span>
+          </div>
+        </Link>
+
+        {/* Video Capture Card */}
+        <Link
+          to="/video-test"
+          className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
+        >
+          <div className="p-6">
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+              <Video className="h-6 w-6 text-purple-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Video Capture
+            </h3>
+            <p className="text-gray-600">
+              Test our experimental video capture feature for AI processing.
+            </p>
+          </div>
+          <div className="px-6 py-3 bg-gray-50">
+            <span className="text-sm font-medium text-purple-600">Try Now →</span>
           </div>
         </Link>
       </div>

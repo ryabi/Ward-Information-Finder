@@ -18,6 +18,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminWardMembers from './pages/admin/AdminWardMembers';
 import AdminMunicipalityMembers from './pages/admin/AdminMunicipalityMembers';
 import NotFound from './pages/NotFound';
+import VideoTest from './pages/VideoTest';
 
 // Layout
 import Layout from './components/layout/Layout';
@@ -47,6 +48,7 @@ function App() {
             <Route path="ward-members/:id" element={<WardMemberDetail />} />
             <Route path="location-finder" element={<LocationFinder />} />
             <Route path="local-culture" element={<LocalCulture />} />
+            <Route path="video-test" element={<VideoTest />} />
             
             {/* Admin Routes */}
             <Route 

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'login',
+    'user_validation',
 ]
 
 MIDDLEWARE = [
