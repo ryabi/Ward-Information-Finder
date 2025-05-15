@@ -1,7 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Camera, StopCircle, Play, X, Loader } from 'lucide-react';
 
-type ValidationStep = 'initial' | 'ready' | 'leftHand' | 'rightHand' | 'completed';
+type ValidationStep = 'initial' | 'ready' | 'leftHand' | 'rightHand' | 'bothHands' | 'completed' | 
+  'Closed_Fist' | 'Open_Palm' | 'Thumb_Down' | 'Thumb_Up';
+
+type GestureType = 'Closed_Fist' | 'Open_Palm' | 'Thumb_Down' | 'Thumb_Up';
+const GESTURES: GestureType[] = ['Closed_Fist', 'Open_Palm', 'Thumb_Down', 'Thumb_Up'];
+
 type ConfirmationState = 'none' | 'waitingToStart' | 'waitingToComplete';
 
 interface FrameBatch {
@@ -36,7 +41,7 @@ const VideoTest: React.FC = () => {
 
   // Constants for timing
   const READY_DELAY = 3000; // 3 seconds get ready time
-  const MAX_VALIDATION_TIME = 7000; // 7 seconds max validation time
+  const MAX_VALIDATION_TIME = 9000; // 9 seconds max validation time
   const FRAME_RATE = 24; // 24fps capture rate
   const FRAMES_TO_SEND = 10; // Send 10 frames per second
   const FRAME_INTERVAL = Math.floor(1000 / FRAME_RATE); // ~41.67ms between captures
@@ -113,7 +118,7 @@ const VideoTest: React.FC = () => {
     setShowPrompt(false);
     setPromptMessage('');
     setShowNextButton(false);
-    setRemainingTime(7);
+    setRemainingTime(9);
     if (frameIntervalRef.current) {
       clearInterval(frameIntervalRef.current);
       frameIntervalRef.current = null;
@@ -125,6 +130,20 @@ const VideoTest: React.FC = () => {
     frameBufferRef.current = [];
     batchNumberRef.current = 0;
     startTimeRef.current = 0;
+  };
+
+  const isHandRaiseStep = (step: ValidationStep): boolean => {
+    return step === 'leftHand' || step === 'rightHand' || step === 'bothHands';
+  };
+
+  const isGestureStep = (step: ValidationStep): boolean => {
+    return GESTURES.includes(step as GestureType);
+  };
+
+  const getNextGesture = (currentGesture: GestureType | null): GestureType | null => {
+    if (!currentGesture) return GESTURES[0];
+    const currentIndex = GESTURES.indexOf(currentGesture);
+    return currentIndex < GESTURES.length - 1 ? GESTURES[currentIndex + 1] : null;
   };
 
   const sendFrameBatch = async (batch: FrameBatch) => {
@@ -140,7 +159,8 @@ const VideoTest: React.FC = () => {
           frames: selectedFrames,
           validation_step: currentStepRef.current,
           timestamp: batch.timestamp,
-          batch_number: batch.batch_number
+          batch_number: batch.batch_number,
+          gesture_recognize: isGestureStep(currentStepRef.current)
         }),
       });
 
@@ -160,9 +180,28 @@ const VideoTest: React.FC = () => {
           stopCapturing();
           resetValidationState();
           setShowPrompt(true);
-          setPromptMessage('Both hands validated successfully!');
+          setPromptMessage('Right hand validated successfully! Ready to validate both hands?');
           setShowNextButton(true);
-          setCurrentStep('completed');
+        } else if (currentStepRef.current === 'bothHands') {
+          stopCapturing();
+          resetValidationState();
+          setShowPrompt(true);
+          setPromptMessage('Hand raise validation completed! Ready to start gesture validation?');
+          setShowNextButton(true);
+        } else if (isGestureStep(currentStepRef.current)) {
+          stopCapturing();
+          resetValidationState();
+          const nextGesture = getNextGesture(currentStepRef.current as GestureType);
+          if (nextGesture) {
+            setShowPrompt(true);
+            setPromptMessage(`${currentStepRef.current} gesture validated! Ready for next gesture?`);
+            setShowNextButton(true);
+          } else {
+            setShowPrompt(true);
+            setPromptMessage('All validations completed successfully!');
+            setShowNextButton(true);
+            setCurrentStep('completed');
+          }
         }
       }
       
@@ -231,6 +270,10 @@ const VideoTest: React.FC = () => {
         setStatus('Please raise your right hand when ready');
         setConfirmationState('waitingToStart');
       } else if (currentStep === 'rightHand') {
+        setCurrentStep('bothHands');
+        setStatus('Please raise both hands when ready');
+        setConfirmationState('waitingToStart');
+      } else if (currentStep === 'bothHands') {
         setCurrentStep('completed');
         setConfirmationState('none');
       }
@@ -358,7 +401,28 @@ const VideoTest: React.FC = () => {
     } else if (currentStep === 'rightHand') {
       setShowPrompt(false);
       setShowNextButton(false);
-      setCurrentStep('completed');
+      setCurrentStep('bothHands');
+      setStatus('Please raise both hands');
+      startCapturing();
+    } else if (currentStep === 'bothHands') {
+      setShowPrompt(false);
+      setShowNextButton(false);
+      setCurrentStep(GESTURES[0]);
+      setStatus(`Please perform the ${GESTURES[0]} gesture`);
+      startCapturing();
+    } else if (isGestureStep(currentStep)) {
+      const nextGesture = getNextGesture(currentStep as GestureType);
+      if (nextGesture) {
+        setShowPrompt(false);
+        setShowNextButton(false);
+        setCurrentStep(nextGesture);
+        setStatus(`Please perform the ${nextGesture} gesture`);
+        startCapturing();
+      } else {
+        setShowPrompt(false);
+        setShowNextButton(false);
+        setCurrentStep('completed');
+      }
     }
   };
 
@@ -396,20 +460,38 @@ const VideoTest: React.FC = () => {
               onClick={startValidation}
               className="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             >
-              Begin Hand Validation
+              Begin Validation
             </button>
           </div>
         );
 
       case 'leftHand':
       case 'rightHand':
+      case 'bothHands':
         return (
           <div className="text-center p-4">
             <h3 className="text-xl font-semibold text-blue-600 mb-4">
-              {currentStep === 'leftHand' ? 'Raise Your Left Hand' : 'Raise Your Right Hand'}
+              {currentStep === 'leftHand' ? 'Raise Your Left Hand' : 
+               currentStep === 'rightHand' ? 'Raise Your Right Hand' : 
+               'Raise Both Hands'}
             </h3>
             <p className="text-gray-600">
-              Keep your hand raised until validated
+              Keep your hand{currentStep === 'bothHands' ? 's' : ''} raised until validated
+            </p>
+          </div>
+        );
+
+      case 'Closed_Fist':
+      case 'Open_Palm':
+      case 'Thumb_Down':
+      case 'Thumb_Up':
+        return (
+          <div className="text-center p-4">
+            <h3 className="text-xl font-semibold text-blue-600 mb-4">
+              Perform the {currentStep.replace('_', ' ')} Gesture
+            </h3>
+            <p className="text-gray-600">
+              Hold the gesture until validated
             </p>
           </div>
         );
@@ -418,7 +500,7 @@ const VideoTest: React.FC = () => {
         return (
           <div className="text-center p-4">
             <h3 className="text-xl font-semibold text-green-600 mb-4">
-              Validation Completed Successfully!
+              All Validations Completed Successfully!
             </h3>
             <button
               onClick={() => {
@@ -521,7 +603,9 @@ const VideoTest: React.FC = () => {
                   onClick={handleNextStep}
                   className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
-                  {currentStep === 'leftHand' ? 'Start Right Hand Validation' : 'Continue to Next Page'}
+                  {currentStep === 'leftHand' ? 'Start Right Hand Validation' : 
+                   currentStep === 'rightHand' ? 'Start Both Hands Validation' : 
+                   'Continue to Next Page'}
                 </button>
               )}
             </div>

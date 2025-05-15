@@ -12,7 +12,7 @@ class validationSerializer(serializers.Serializer):
     batch_number=serializers.IntegerField()
     timestamp=serializers.IntegerField()
     validation_step=serializers.CharField()
-    
+    gesture_recognize=serializers.BooleanField()
     # def validate(self, value):
     #     """
     #     Validate that all frames are valid base64 encoded JPEG images
