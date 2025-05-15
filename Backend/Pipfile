@@ -12,6 +12,10 @@ django-cors-headers = "*"
 django-environ = "*"
 djangorestframework-simplejwt = "*"
 pdfplumber = "*"
+opencv-python = "*"
+mediapipe = "*"
+ffmpeg-python = "*"
+av = "*"
 
 [dev-packages]
 
