@@ -5,7 +5,53 @@ type ValidationStep = 'initial' | 'ready' | 'leftHand' | 'rightHand' | 'bothHand
   'Closed_Fist' | 'Open_Palm' | 'Thumb_Down' | 'Thumb_Up';
 
 type GestureType = 'Closed_Fist' | 'Open_Palm' | 'Thumb_Down' | 'Thumb_Up';
+type HandRaiseType = 'leftHand' | 'rightHand' | 'bothHands';
+
 const GESTURES: GestureType[] = ['Closed_Fist', 'Open_Palm', 'Thumb_Down', 'Thumb_Up'];
+const HAND_RAISE_STEPS: HandRaiseType[] = ['leftHand', 'rightHand', 'bothHands'];
+
+// Visual symbols for each action
+const ACTION_SYMBOLS = {
+  leftHand: '👈 ✋',
+  rightHand: '✋ 👉',
+  bothHands: '🙌',
+  Closed_Fist: '✊',
+  Open_Palm: '✋',
+  Thumb_Down: '👎',
+  Thumb_Up: '👍'
+} as const;
+
+// Helper function to get action description with symbol
+const getActionDescription = (step: ValidationStep): string => {
+  switch (step) {
+    case 'leftHand':
+      return `Raise Your Left Hand ${ACTION_SYMBOLS.leftHand}`;
+    case 'rightHand':
+      return `Raise Your Right Hand ${ACTION_SYMBOLS.rightHand}`;
+    case 'bothHands':
+      return `Raise Both Hands ${ACTION_SYMBOLS.bothHands}`;
+    case 'Closed_Fist':
+      return `Make a Closed Fist ${ACTION_SYMBOLS.Closed_Fist}`;
+    case 'Open_Palm':
+      return `Show Open Palm ${ACTION_SYMBOLS.Open_Palm}`;
+    case 'Thumb_Down':
+      return `Show Thumbs Down ${ACTION_SYMBOLS.Thumb_Down}`;
+    case 'Thumb_Up':
+      return `Show Thumbs Up ${ACTION_SYMBOLS.Thumb_Up}`;
+    default:
+      return '';
+  }
+};
+
+// Fisher-Yates shuffle algorithm
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
 
 type ConfirmationState = 'none' | 'waitingToStart' | 'waitingToComplete';
 
@@ -38,6 +84,9 @@ const VideoTest: React.FC = () => {
   const [showPrompt, setShowPrompt] = useState<boolean>(false);
   const [promptMessage, setPromptMessage] = useState<string>('');
   const [showNextButton, setShowNextButton] = useState<boolean>(false);
+  const [randomizedHandSteps, setRandomizedHandSteps] = useState<HandRaiseType[]>([]);
+  const [randomizedGestures, setRandomizedGestures] = useState<GestureType[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
   // Constants for timing
   const READY_DELAY = 3000; // 3 seconds get ready time
@@ -52,6 +101,12 @@ const VideoTest: React.FC = () => {
     currentStepRef.current = currentStep;
     console.log('Current step changed to:', currentStep);
   }, [currentStep]);
+
+  // Initialize randomized sequences
+  useEffect(() => {
+    setRandomizedHandSteps(shuffleArray(HAND_RAISE_STEPS));
+    setRandomizedGestures(shuffleArray(GESTURES));
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -249,8 +304,10 @@ const VideoTest: React.FC = () => {
     }
 
     resetValidationState();
-    setCurrentStep('leftHand');
-    setStatus('Please raise your left hand');
+    setCurrentStepIndex(0);
+    setCurrentStep(randomizedHandSteps[0]);
+    const firstStep = randomizedHandSteps[0];
+    setStatus(`Please ${firstStep === 'bothHands' ? 'raise both hands' : `raise your ${firstStep.replace('Hand', ' hand')}`} ${ACTION_SYMBOLS[firstStep]}`);
     startCapturing();
   };
 
@@ -392,35 +449,37 @@ const VideoTest: React.FC = () => {
   }, [isCapturing]);
 
   const handleNextStep = () => {
-    if (currentStep === 'leftHand') {
-      setShowPrompt(false);
-      setShowNextButton(false);
-      setCurrentStep('rightHand');
-      setStatus('Please raise your right hand');
-      startCapturing();
-    } else if (currentStep === 'rightHand') {
-      setShowPrompt(false);
-      setShowNextButton(false);
-      setCurrentStep('bothHands');
-      setStatus('Please raise both hands');
-      startCapturing();
-    } else if (currentStep === 'bothHands') {
-      setShowPrompt(false);
-      setShowNextButton(false);
-      setCurrentStep(GESTURES[0]);
-      setStatus(`Please perform the ${GESTURES[0]} gesture`);
-      startCapturing();
-    } else if (isGestureStep(currentStep)) {
-      const nextGesture = getNextGesture(currentStep as GestureType);
-      if (nextGesture) {
-        setShowPrompt(false);
-        setShowNextButton(false);
-        setCurrentStep(nextGesture);
-        setStatus(`Please perform the ${nextGesture} gesture`);
+    setShowPrompt(false);
+    setShowNextButton(false);
+
+    const isInHandRaisePhase = currentStepIndex < randomizedHandSteps.length;
+    const nextIndex = currentStepIndex + 1;
+    setCurrentStepIndex(nextIndex);
+
+    if (isInHandRaisePhase) {
+      if (nextIndex < randomizedHandSteps.length) {
+        // Continue with hand raise sequence
+        const nextStep = randomizedHandSteps[nextIndex];
+        setCurrentStep(nextStep);
+        setStatus(`Please ${nextStep === 'bothHands' ? 'raise both hands' : `raise your ${nextStep.replace('Hand', ' hand')}`} ${ACTION_SYMBOLS[nextStep]}`);
         startCapturing();
       } else {
-        setShowPrompt(false);
-        setShowNextButton(false);
+        // Start gesture sequence
+        const firstGesture = randomizedGestures[0];
+        setCurrentStep(firstGesture);
+        setStatus(`Please perform the ${firstGesture.replace('_', ' ')} gesture ${ACTION_SYMBOLS[firstGesture]}`);
+        startCapturing();
+      }
+    } else {
+      const gestureIndex = nextIndex - randomizedHandSteps.length;
+      if (gestureIndex < randomizedGestures.length) {
+        // Continue with gesture sequence
+        const nextGesture = randomizedGestures[gestureIndex];
+        setCurrentStep(nextGesture);
+        setStatus(`Please perform the ${nextGesture.replace('_', ' ')} gesture ${ACTION_SYMBOLS[nextGesture]}`);
+        startCapturing();
+      } else {
+        // All validations completed
         setCurrentStep('completed');
       }
     }
@@ -435,6 +494,7 @@ const VideoTest: React.FC = () => {
             <p className="text-gray-600 mb-6">
               Please ensure you are in a well-lit environment and have enough space to move your arms.
               Face the camera directly and make sure your upper body is clearly visible.
+              The sequence of hand raises and gestures will be randomized.
             </p>
             <button
               onClick={startCamera}
@@ -471,12 +531,10 @@ const VideoTest: React.FC = () => {
         return (
           <div className="text-center p-4">
             <h3 className="text-xl font-semibold text-blue-600 mb-4">
-              {currentStep === 'leftHand' ? 'Raise Your Left Hand' : 
-               currentStep === 'rightHand' ? 'Raise Your Right Hand' : 
-               'Raise Both Hands'}
+              {getActionDescription(currentStep)}
             </h3>
             <p className="text-gray-600">
-              Keep your hand{currentStep === 'bothHands' ? 's' : ''} raised until validated
+              Hold the position until validated
             </p>
           </div>
         );
@@ -488,10 +546,10 @@ const VideoTest: React.FC = () => {
         return (
           <div className="text-center p-4">
             <h3 className="text-xl font-semibold text-blue-600 mb-4">
-              Perform the {currentStep.replace('_', ' ')} Gesture
+              {getActionDescription(currentStep)}
             </h3>
             <p className="text-gray-600">
-              Hold the gesture until validated
+              Hold the position until validated
             </p>
           </div>
         );

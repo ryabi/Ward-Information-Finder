@@ -63,9 +63,9 @@ class pose_detection(APIView):
             validation_step=serialized_data.validated_data['validation_step']
             gesture_recognize=serialized_data.validated_data['gesture_recognize']
             print(f"Received validation step: {validation_step}")
-            true_counter=0
-            false_counter=0
             if not gesture_recognize:
+                true_counter=0
+                false_counter=0
                 with PoseLandmarker.create_from_options(options) as landmarker:
                     for frame in frames:
                         try:
@@ -127,7 +127,9 @@ class pose_detection(APIView):
                                 'message':'Error converting base64'
                     
                             })  
-            elif gesture_recognize:            
+            elif gesture_recognize:      
+                true_counter=0
+                false_counter=0      
                 with GestureRecognizer.create_from_options(gesture_options) as gesture_recognizer:
                     for frame in frames:
                         try:
@@ -147,15 +149,25 @@ class pose_detection(APIView):
                                 gesture_result=gesture_recognizer.recognize(mp_image)
                                 
                                 if validation_step=="Closed_Fist" and gesture_result.gestures[0][0].category_name== validation_step :
-                                    return Response({'validation': 'validated'})
+                                    true_counter+=1
+                                    
                                 elif validation_step=='Open_Palm' and gesture_result.gestures[0][0].category_name== validation_step :
-                                    return Response({'validation': 'validated'})
+                                    true_counter+=1
+                                    
                                 elif validation_step=='Thumb_Down' and gesture_result.gestures[0][0].category_name== validation_step :
-                                    return Response({'validation': 'validated'})
+                                    true_counter+=1
+                                    # return Response({'validation': 'validated'})
                                 elif validation_step=='Thumb_Up' and gesture_result.gestures[0][0].category_name== validation_step :
-                                    return Response({'validation': 'validated'})
+                                    true_counter+=1
+                                   
                                 else:
+                                    false_counter +=1
+                                    
+                                if true_counter >=3:
+                                    return Response({'validation': 'validated'}) 
+                                if false_counter>=7:
                                     return Response({'validation': 'not_validated'})
+                                
                         except Exception as e :
                             print(f"Error converting base64 to numpy: {e}")
                             return Response({
