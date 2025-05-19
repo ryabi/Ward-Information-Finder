@@ -10,6 +10,9 @@ type HandRaiseType = 'leftHand' | 'rightHand' | 'bothHands';
 const GESTURES: GestureType[] = ['Closed_Fist', 'Open_Palm', 'Thumb_Down', 'Thumb_Up'];
 const HAND_RAISE_STEPS: HandRaiseType[] = ['leftHand', 'rightHand', 'bothHands'];
 
+// Combine all possible validation steps
+const ALL_VALIDATION_STEPS = [...HAND_RAISE_STEPS, ...GESTURES];
+
 // Visual symbols for each action
 const ACTION_SYMBOLS = {
   leftHand: '👈 ✋',
@@ -99,8 +102,7 @@ const VideoTest: React.FC = () => {
   const [showPrompt, setShowPrompt] = useState<boolean>(false);
   const [promptMessage, setPromptMessage] = useState<string>('');
   const [showNextButton, setShowNextButton] = useState<boolean>(false);
-  const [randomizedHandSteps, setRandomizedHandSteps] = useState<HandRaiseType[]>([]);
-  const [randomizedGestures, setRandomizedGestures] = useState<GestureType[]>([]);
+  const [randomizedSteps, setRandomizedSteps] = useState<ValidationStep[]>([]);
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
 
   // Constants for timing
@@ -117,14 +119,12 @@ const VideoTest: React.FC = () => {
     console.log('[State Change] Current step changed to:', currentStep);
   }, [currentStep]);
 
-  // Initialize randomized sequences
+  // Initialize randomized steps
   useEffect(() => {
-    const shuffledHandSteps = shuffleArray(HAND_RAISE_STEPS);
-    const shuffledGestures = shuffleArray(GESTURES);
-    console.log('[Initialization] Randomized hand steps:', shuffledHandSteps);
-    console.log('[Initialization] Randomized gestures:', shuffledGestures);
-    setRandomizedHandSteps(shuffledHandSteps);
-    setRandomizedGestures(shuffledGestures);
+    // Select 3 random steps from all possible validation steps
+    const shuffledSteps = shuffleArray(ALL_VALIDATION_STEPS).slice(0, 3);
+    console.log('[Initialization] Randomized validation steps:', shuffledSteps);
+    setRandomizedSteps(shuffledSteps);
   }, []);
 
   useEffect(() => {
@@ -257,10 +257,20 @@ const VideoTest: React.FC = () => {
       ws.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
-          console.log('[WebSocket] Received message:', message);
+          
           if (message.type === 'validation_result') {
+            // Log validation result specifically
+            console.log('%c[Validation Result]', 'color: #FF9800; font-weight: bold', {
+              validation: message.data.validation,
+              step: message.data.validation_step,
+              timestamp: new Date().toISOString()
+            });
             handleValidationResult(message.data);
           } else if (message.type === 'error') {
+            console.error('%c[WebSocket Error]', 'color: #F44336; font-weight: bold', {
+              message: message.data.message,
+              timestamp: new Date().toISOString()
+            });
             setError(message.data.message || 'An error occurred');
           }
         } catch (error) {
@@ -283,41 +293,29 @@ const VideoTest: React.FC = () => {
 
   const handleValidationResult = (data: WebSocketMessage['data']) => {
     console.log('[Validation] Received validation result:', data);
+    
     if (data.validation === 'validated') {
       console.log(`[Validation] Step ${currentStepRef.current} validated successfully`);
-      if (currentStepRef.current === 'leftHand') {
-        stopCapturing();
-        resetValidationState();
+      stopCapturing();
+      resetValidationState();
+      
+      const currentIndex = currentStepIndex;
+      const isLastStep = currentIndex === randomizedSteps.length - 1;
+      
+      if (isLastStep) {
         setShowPrompt(true);
-        setPromptMessage('Left hand validated successfully! Ready for right hand validation?');
+        setPromptMessage('All validations completed successfully!');
         setShowNextButton(true);
-      } else if (currentStepRef.current === 'rightHand') {
-        stopCapturing();
-        resetValidationState();
+        setCurrentStep('completed');
+      } else {
         setShowPrompt(true);
-        setPromptMessage('Right hand validated successfully! Ready to validate both hands?');
+        setPromptMessage(`${currentStepRef.current} validated! Ready for next validation step?`);
         setShowNextButton(true);
-      } else if (currentStepRef.current === 'bothHands') {
-        stopCapturing();
-        resetValidationState();
-        setShowPrompt(true);
-        setPromptMessage('Hand raise validation completed! Ready to start gesture validation?');
-        setShowNextButton(true);
-      } else if (isGestureStep(currentStepRef.current)) {
-        stopCapturing();
-        resetValidationState();
-        const nextGesture = getNextGesture(currentStepRef.current as GestureType);
-        if (nextGesture) {
-          setShowPrompt(true);
-          setPromptMessage(`${currentStepRef.current} gesture validated! Ready for next gesture?`);
-          setShowNextButton(true);
-        } else {
-          setShowPrompt(true);
-          setPromptMessage('All validations completed successfully!');
-          setShowNextButton(true);
-          setCurrentStep('completed');
-        }
       }
+    } else if (data.validation === 'not_validated') {
+      console.log(`[Validation] Step ${currentStepRef.current} validation failed`);
+      // Don't show any message, just continue capturing until timeout
+      setStatus(`Please ${getActionDescription(currentStepRef.current)}`);
     }
   };
 
@@ -342,6 +340,16 @@ const VideoTest: React.FC = () => {
           gesture_recognize: isGestureStep(currentStepRef.current)
         }
       };
+
+      // Log outgoing message
+      console.log('%c[WebSocket] Sending message:', 'color: #9C27B0; font-weight: bold', {
+        type: message.type,
+        data: {
+          ...message.data,
+          frames: `[${selectedFrames.length} frames]` // Log frame count instead of actual frames
+        },
+        timestamp: new Date().toISOString()
+      });
 
       wsRef.current.send(JSON.stringify(message));
       console.log('[WebSocket] Batch sent successfully');
@@ -395,10 +403,10 @@ const VideoTest: React.FC = () => {
     console.log('[Validation] Starting validation process');
     resetValidationState();
     setCurrentStepIndex(0);
-    setCurrentStep(randomizedHandSteps[0]);
-    const firstStep = randomizedHandSteps[0];
+    const firstStep = randomizedSteps[0];
+    setCurrentStep(firstStep);
     console.log(`[Validation] First step set to: ${firstStep}`);
-    setStatus(`Please ${firstStep === 'bothHands' ? 'raise both hands' : `raise your ${firstStep.replace('Hand', ' hand')}`} ${ACTION_SYMBOLS[firstStep]}`);
+    setStatus(`Please ${getActionDescription(firstStep)}`);
     startCapturing();
   };
 
@@ -549,36 +557,16 @@ const VideoTest: React.FC = () => {
     setShowPrompt(false);
     setShowNextButton(false);
 
-    const isInHandRaisePhase = currentStepIndex < randomizedHandSteps.length;
     const nextIndex = currentStepIndex + 1;
     setCurrentStepIndex(nextIndex);
 
-    if (isInHandRaisePhase) {
-      if (nextIndex < randomizedHandSteps.length) {
-        // Continue with hand raise sequence
-        const nextStep = randomizedHandSteps[nextIndex];
-        setCurrentStep(nextStep);
-        setStatus(`Please ${nextStep === 'bothHands' ? 'raise both hands' : `raise your ${nextStep.replace('Hand', ' hand')}`} ${ACTION_SYMBOLS[nextStep]}`);
-        startCapturing();
-      } else {
-        // Start gesture sequence
-        const firstGesture = randomizedGestures[0];
-        setCurrentStep(firstGesture);
-        setStatus(`Please perform the ${firstGesture.replace('_', ' ')} gesture ${ACTION_SYMBOLS[firstGesture]}`);
-        startCapturing();
-      }
+    if (nextIndex < randomizedSteps.length) {
+      const nextStep = randomizedSteps[nextIndex];
+      setCurrentStep(nextStep);
+      setStatus(`Please ${getActionDescription(nextStep)}`);
+      startCapturing();
     } else {
-      const gestureIndex = nextIndex - randomizedHandSteps.length;
-      if (gestureIndex < randomizedGestures.length) {
-        // Continue with gesture sequence
-        const nextGesture = randomizedGestures[gestureIndex];
-        setCurrentStep(nextGesture);
-        setStatus(`Please perform the ${nextGesture.replace('_', ' ')} gesture ${ACTION_SYMBOLS[nextGesture]}`);
-        startCapturing();
-      } else {
-        // All validations completed
-        setCurrentStep('completed');
-      }
+      setCurrentStep('completed');
     }
   };
 
@@ -609,7 +597,7 @@ const VideoTest: React.FC = () => {
             <p className="text-gray-600 mb-6">
               Please ensure you are in a well-lit environment and have enough space to move your arms.
               Face the camera directly and make sure your upper body is clearly visible.
-              The sequence of hand raises and gestures will be randomized.
+              You will need to complete 3 random validation steps.
             </p>
             <button
               onClick={startCamera}
@@ -640,35 +628,6 @@ const VideoTest: React.FC = () => {
           </div>
         );
 
-      case 'leftHand':
-      case 'rightHand':
-      case 'bothHands':
-        return (
-          <div className="text-center p-4">
-            <h3 className="text-xl font-semibold text-blue-600 mb-4">
-              {getActionDescription(currentStep)}
-            </h3>
-            <p className="text-gray-600">
-              Hold the position until validated
-            </p>
-          </div>
-        );
-
-      case 'Closed_Fist':
-      case 'Open_Palm':
-      case 'Thumb_Down':
-      case 'Thumb_Up':
-        return (
-          <div className="text-center p-4">
-            <h3 className="text-xl font-semibold text-blue-600 mb-4">
-              {getActionDescription(currentStep)}
-            </h3>
-            <p className="text-gray-600">
-              Hold the position until validated
-            </p>
-          </div>
-        );
-
       case 'completed':
         return (
           <div className="text-center p-4">
@@ -688,7 +647,16 @@ const VideoTest: React.FC = () => {
         );
 
       default:
-        return null;
+        return (
+          <div className="text-center p-4">
+            <h3 className="text-xl font-semibold text-blue-600 mb-4">
+              {getActionDescription(currentStep)}
+            </h3>
+            <p className="text-gray-600">
+              Hold the position until validated
+            </p>
+          </div>
+        );
     }
   };
 

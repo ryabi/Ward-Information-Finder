@@ -13,8 +13,42 @@ import logging
 import json
 import base64
 from PIL import Image
+import absl.logging
+import sys
 
+# Suppress MediaPipe warnings
+logging.root.removeHandler(absl.logging._absl_handler)
+absl.logging._warn_preinit_stderr = False
+
+# Configure logging
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Remove any existing handlers to prevent duplicate logs
+for handler in logger.handlers[:]:
+    logger.removeHandler(handler)
+
+# Create a formatter with more detailed information
+formatter = logging.Formatter(
+    '%(asctime)s - %(levelname)s - [%(name)s] - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+# Create console handler
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+
+# Create file handler
+file_handler = logging.FileHandler('validation.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+# Suppress MediaPipe specific warnings
+logging.getLogger('mediapipe').setLevel(logging.ERROR)
+
+# Prevent propagation to root logger to avoid duplicate logs
+logger.propagate = False
 
 class ValidateUser(AsyncWebsocketConsumer):
     model_path='./data/pose_landmarker_full.task'
@@ -23,7 +57,7 @@ class ValidateUser(AsyncWebsocketConsumer):
     BaseOptions = mp.tasks.BaseOptions
     PoseLandmarker = mp.tasks.vision.PoseLandmarker
     PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
-    PoseLandmarkerResult = mp.tasks.vision.PoseLandmarkerResult
+    # PoseLandmarkerResult = mp.tasks.vision.PoseLandmarkerResult
     VisionRunningMode = mp.tasks.vision.RunningMode
 
     #For gesture recognition model. Configuring Model
@@ -38,9 +72,11 @@ class ValidateUser(AsyncWebsocketConsumer):
         self.gesture_recognizer = None
         self.pose_options = None
         self.gesture_options = None
+        self.client_id = None
 
     async def connect(self):
-        logger.info("[WebSocket] Client attempting to connect")
+        self.client_id = id(self)
+        logger.info(f"Client {self.client_id} attempting to connect")
         try:
             # Initialize pose landmarker options
             self.pose_options = self.PoseLandmarkerOptions(
@@ -64,13 +100,13 @@ class ValidateUser(AsyncWebsocketConsumer):
             self.gesture_recognizer = self.GestureRecognizer.create_from_options(self.gesture_options)
 
             await self.accept()
-            logger.info("[WebSocket] Client connected successfully and models initialized")
+            logger.info(f"Client {self.client_id} connected successfully and models initialized")
         except Exception as e:
-            logger.error(f"[WebSocket] Error during connection: {str(e)}")
+            logger.error(f"Client {self.client_id} error during connection: {str(e)}")
             await self.close()
         
     async def disconnect(self, close_code):
-        logger.info(f"[WebSocket] Client disconnected with code: {close_code}")
+        logger.info(f"[WebSocket] Client {self.client_id} disconnected with code: {close_code}")
         try:
             # Clean up model resources
             if self.pose_landmarker:
@@ -79,53 +115,59 @@ class ValidateUser(AsyncWebsocketConsumer):
             if self.gesture_recognizer:
                 self.gesture_recognizer.close()
                 self.gesture_recognizer = None
-            logger.info("[WebSocket] Model resources cleaned up")
+            logger.info(f"[WebSocket] Client {self.client_id} model resources cleaned up")
         except Exception as e:
-            logger.error(f"[WebSocket] Error during cleanup: {str(e)}")
+            logger.error(f"[WebSocket] Client {self.client_id} error during cleanup: {str(e)}")
 
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
-            logger.info(f"[WebSocket] Received message type: {data.get('type')}")
+            logger.info(f"[WebSocket] Client {self.client_id} received message type: {data.get('type')}")
 
             if data['type'] == 'frames':
                 # Process the frames
                 await self.process_frames(data['data'])
             else:
-                logger.warning(f"[WebSocket] Unknown message type: {data['type']}")
+                logger.warning(f"[WebSocket] Client {self.client_id} unknown message type: {data['type']}")
 
         except json.JSONDecodeError:
-            logger.error("[WebSocket] Failed to parse JSON message")
+            logger.error(f"[WebSocket] Client {self.client_id} failed to parse JSON message")
             await self.send_error("Invalid JSON message")
         except Exception as e:
-            logger.error(f"[WebSocket] Error processing message: {str(e)}")
+            logger.error(f"[WebSocket] Client {self.client_id} error processing message: {str(e)}")
             await self.send_error(str(e))
 
     async def send_error(self, message):
-        await self.send(text_data=json.dumps({
+        response = {
             'type': 'error',
             'data': {
                 'message': message
             }
-        }))
+        }
+        logger.error(f"[WebSocket] Client {self.client_id} sending error response: {json.dumps(response)}")
+        await self.send(text_data=json.dumps(response))
 
     async def send_validation_result(self, validation, validation_step):
-        await self.send(text_data=json.dumps({
+        response = {
             'type': 'validation_result',
             'data': {
                 'validation': validation,
                 'validation_step': validation_step
             }
-        }))
+        }
+        try:
+            await self.send(text_data=json.dumps(response))
+            logger.info(f"Client {self.client_id} - {validation_step}: {validation}")
+        except Exception as e:
+            logger.error(f"Client {self.client_id} - Error sending validation result: {str(e)}")
 
-    @sync_to_async
-    def process_frames(self, data):
+    async def process_frames(self, data):
         try:    
             frames = data['frames']
             validation_step = data['validation_step']
             batch_number = data['batch_number']
             gesture_recognize = data['gesture_recognize']
-            logger.info(f"[Processing] Processing batch {batch_number} for step {validation_step}")
+            logger.info(f"Client {self.client_id} - Processing batch {batch_number} for {validation_step}")
 
             if not gesture_recognize:
                 true_counter = 0
@@ -146,8 +188,9 @@ class ValidateUser(AsyncWebsocketConsumer):
                             result = self.pose_landmarker.detect(mp_image)
                             
                             if not result.pose_landmarks:
-                                logger.warning("No pose landmarks detected")
-                                return self.send_validation_result('not_validated', validation_step)
+                                logger.warning(f"Client {self.client_id} - No pose landmarks detected")
+                                await self.send_validation_result('not_validated', validation_step)
+                                return
 
                             if validation_step == 'leftHand':
                                 left_valid = self.left_hand_validation(result)
@@ -163,7 +206,7 @@ class ValidateUser(AsyncWebsocketConsumer):
                                 is_valid = left_valid and right_valid
                             else:
                                 is_valid = False
-                                logger.warning(f"Unknown validation step: {validation_step}")
+                                logger.warning(f"Client {self.client_id} - Unknown validation step: {validation_step}")
 
                             if is_valid:
                                 true_counter += 1
@@ -171,13 +214,18 @@ class ValidateUser(AsyncWebsocketConsumer):
                                 false_counter += 1
 
                             if true_counter >= 3:
-                                return self.send_validation_result('validated', validation_step)
-                            if false_counter >= 7:
-                                return self.send_validation_result('not_validated', validation_step)
+                                await self.send_validation_result('validated', validation_step)
+                                logger.info(f"Client {self.client_id} - {validation_step} validation successful")
+                                return
+                            if false_counter >= 5:
+                                await self.send_validation_result('not_validated', validation_step)
+                                logger.info(f"Client {self.client_id} - {validation_step} validation failed")
+                                return
 
                     except Exception as e:
-                        logger.error(f"Error processing frame: {str(e)}")
-                        return self.send_error(f"Error processing frame: {str(e)}")
+                        logger.error(f"Client {self.client_id} - Error processing frame: {str(e)}")
+                        await self.send_error(f"Error processing frame: {str(e)}")
+                        return
 
             elif gesture_recognize:
                 true_counter = 0
@@ -207,17 +255,23 @@ class ValidateUser(AsyncWebsocketConsumer):
                                     false_counter += 1
 
                                 if true_counter >= 3:
-                                    return self.send_validation_result('validated', validation_step)
+                                    await self.send_validation_result('validated', validation_step)
+                                    logger.info(f"Client {self.client_id} - {validation_step} gesture validation successful")
+                                    return
                                 if false_counter >= 7:
-                                    return self.send_validation_result('not_validated', validation_step)
+                                    await self.send_validation_result('not_validated', validation_step)
+                                    logger.info(f"Client {self.client_id} - {validation_step} gesture validation failed")
+                                    return
 
                     except Exception as e:
-                        logger.error(f"Error processing gesture frame: {str(e)}")
-                        return self.send_error(f"Error processing gesture frame: {str(e)}")
+                        logger.error(f"Client {self.client_id} - Error processing gesture frame: {str(e)}")
+                        await self.send_error(f"Error processing gesture frame: {str(e)}")
+                        return
 
         except Exception as e:
-            logger.error(f"[Processing] Error processing frames: {str(e)}")
-            return self.send_error(f"Error processing frames: {str(e)}")
+            logger.error(f"Client {self.client_id} - Error processing frames: {str(e)}")
+            await self.send_error(f"Error processing frames: {str(e)}")
+            return
 
     def left_hand_validation(self, detection_result):
         if not detection_result.pose_landmarks:
@@ -232,7 +286,7 @@ class ValidateUser(AsyncWebsocketConsumer):
             )
             return leftRaise
         except Exception as e:
-            logger.error(f"Error in left hand validation: {str(e)}")
+            logger.error(f"Client {self.client_id} - Error in left hand validation: {str(e)}")
             return False
 
     def right_hand_validation(self, detection_result):
@@ -248,7 +302,7 @@ class ValidateUser(AsyncWebsocketConsumer):
             )
             return rightRaise
         except Exception as e:
-            logger.error(f"Error in right hand validation: {str(e)}")
+            logger.error(f"Client {self.client_id} - Error in right hand validation: {str(e)}")
             return False
     
         

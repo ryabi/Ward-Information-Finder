@@ -16,3 +16,344 @@ INFO 2025-05-20 00:34:46,806 consumers [WebSocket] Received message type: frames
 INFO 2025-05-20 00:34:46,806 consumers [Processing] Processing batch 4 for step leftHand
 INFO 2025-05-20 00:34:47,871 consumers [WebSocket] Received message type: frames
 INFO 2025-05-20 00:34:47,871 consumers [Processing] Processing batch 5 for step leftHand
+INFO 2025-05-20 00:43:51,185 consumers [WebSocket] Client disconnected with code: 1001
+INFO 2025-05-20 00:43:51,185 consumers [WebSocket] Client disconnected with code: 1001
+INFO 2025-05-20 00:43:51,755 consumers [WebSocket] Client attempting to connect
+INFO 2025-05-20 00:43:51,756 consumers [WebSocket] Client connected successfully
+INFO 2025-05-20 00:43:51,759 consumers [WebSocket] Client disconnected with code: 1001
+INFO 2025-05-20 00:43:51,770 consumers [WebSocket] Client attempting to connect
+INFO 2025-05-20 00:43:51,771 consumers [WebSocket] Client connected successfully
+INFO 2025-05-20 00:43:54,756 consumers [WebSocket] Client attempting to connect
+INFO 2025-05-20 00:43:54,757 consumers [WebSocket] Client connected successfully
+INFO 2025-05-20 00:44:14,851 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:44:14,851 consumers [Processing] Processing batch 1 for step rightHand
+INFO 2025-05-20 00:44:15,827 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:44:15,828 consumers [Processing] Processing batch 2 for step rightHand
+INFO 2025-05-20 00:44:16,869 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:44:16,870 consumers [Processing] Processing batch 3 for step rightHand
+INFO 2025-05-20 00:44:17,937 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:44:17,937 consumers [Processing] Processing batch 4 for step rightHand
+INFO 2025-05-20 00:44:19,039 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:44:19,039 consumers [Processing] Processing batch 5 for step rightHand
+INFO 2025-05-20 00:49:09,362 server Killed 2 pending application instances
+INFO 2025-05-20 01:00:14,432 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:00:14,433 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 01:00:14,433 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:00:14,434 server Listening on TCP address 127.0.0.1:8000
+INFO 2025-05-20 01:00:18,028 consumers [WebSocket] Client 1948388673808 attempting to connect
+INFO 2025-05-20 01:00:18,278 consumers [WebSocket] Client 1948388673808 connected successfully and models initialized
+INFO 2025-05-20 01:00:18,298 consumers [WebSocket] Client 1948402021904 attempting to connect
+INFO 2025-05-20 01:00:18,536 consumers [WebSocket] Client 1948402021904 connected successfully and models initialized
+INFO 2025-05-20 01:01:22,120 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:01:22,131 consumers [Processing] Client 1948388673808 processing batch 1 for step rightHand
+INFO 2025-05-20 01:01:22,532 consumers [Processing] Client 1948388673808 validation failed for rightHand
+INFO 2025-05-20 01:01:23,107 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:01:23,107 consumers [Processing] Client 1948388673808 processing batch 2 for step rightHand
+INFO 2025-05-20 01:01:23,285 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:01:24,127 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:01:24,128 consumers [Processing] Client 1948388673808 processing batch 3 for step rightHand
+INFO 2025-05-20 01:01:24,302 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:01:25,245 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:01:25,246 consumers [Processing] Client 1948388673808 processing batch 4 for step rightHand
+INFO 2025-05-20 01:01:25,457 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:01:26,304 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:01:26,305 consumers [Processing] Client 1948388673808 processing batch 5 for step rightHand
+INFO 2025-05-20 01:01:26,480 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:06:14,155 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:06:14,156 consumers [Processing] Client 1948388673808 processing batch 1 for step rightHand
+INFO 2025-05-20 01:06:14,545 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:06:15,261 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:06:15,262 consumers [Processing] Client 1948388673808 processing batch 2 for step rightHand
+INFO 2025-05-20 01:06:15,426 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:06:16,363 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:06:16,364 consumers [Processing] Client 1948388673808 processing batch 3 for step rightHand
+INFO 2025-05-20 01:06:16,533 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:06:17,489 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:06:17,489 consumers [Processing] Client 1948388673808 processing batch 4 for step rightHand
+INFO 2025-05-20 01:06:17,662 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:06:18,463 consumers [WebSocket] Client 1948388673808 received message type: frames
+INFO 2025-05-20 01:06:18,464 consumers [Processing] Client 1948388673808 processing batch 5 for step rightHand
+INFO 2025-05-20 01:06:18,630 consumers [Processing] Client 1948388673808 validation successful for rightHand
+INFO 2025-05-20 01:07:57,446 consumers [WebSocket] Client 1948388673808 disconnected with code: None
+INFO 2025-05-20 01:07:57,470 consumers [WebSocket] Client 1948388673808 model resources cleaned up
+INFO 2025-05-20 01:07:57,760 consumers [WebSocket] Client 1948402670064 attempting to connect
+INFO 2025-05-20 01:07:58,070 consumers [WebSocket] Client 1948402670064 connected successfully and models initialized
+INFO 2025-05-20 01:08:01,747 consumers [WebSocket] Client 1948402667040 attempting to connect
+INFO 2025-05-20 01:08:01,966 consumers [WebSocket] Client 1948402667040 connected successfully and models initialized
+INFO 2025-05-20 01:08:42,458 consumers [WebSocket] Client 1948402667040 disconnected with code: None
+INFO 2025-05-20 01:08:42,482 consumers [WebSocket] Client 1948402667040 model resources cleaned up
+INFO 2025-05-20 01:08:42,774 consumers [WebSocket] Client 1948402334928 attempting to connect
+INFO 2025-05-20 01:08:42,979 consumers [WebSocket] Client 1948402334928 connected successfully and models initialized
+INFO 2025-05-20 01:08:46,761 consumers [WebSocket] Client 1948402672800 attempting to connect
+INFO 2025-05-20 01:08:46,948 consumers [WebSocket] Client 1948402672800 connected successfully and models initialized
+INFO 2025-05-20 01:09:27,240 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:09:27,240 consumers [Processing] Client 1948402672800 processing batch 1 for step rightHand
+INFO 2025-05-20 01:09:27,587 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:09:28,267 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:09:28,267 consumers [Processing] Client 1948402672800 processing batch 2 for step rightHand
+INFO 2025-05-20 01:09:28,440 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:09:29,419 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:09:29,419 consumers [Processing] Client 1948402672800 processing batch 3 for step rightHand
+INFO 2025-05-20 01:09:29,598 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:09:30,441 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:09:30,441 consumers [Processing] Client 1948402672800 processing batch 4 for step rightHand
+INFO 2025-05-20 01:09:30,624 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:09:31,461 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:09:31,462 consumers [Processing] Client 1948402672800 processing batch 5 for step rightHand
+INFO 2025-05-20 01:09:31,642 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:10:29,953 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:10:29,953 consumers [Processing] Client 1948402672800 processing batch 1 for step rightHand
+INFO 2025-05-20 01:10:30,343 consumers [Processing] Client 1948402672800 validation failed for rightHand
+INFO 2025-05-20 01:10:30,952 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:10:30,952 consumers [Processing] Client 1948402672800 processing batch 2 for step rightHand
+INFO 2025-05-20 01:10:31,331 consumers [Processing] Client 1948402672800 validation failed for rightHand
+INFO 2025-05-20 01:10:31,949 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:10:31,949 consumers [Processing] Client 1948402672800 processing batch 3 for step rightHand
+INFO 2025-05-20 01:10:32,356 consumers [Processing] Client 1948402672800 validation failed for rightHand
+INFO 2025-05-20 01:10:33,076 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:10:33,076 consumers [Processing] Client 1948402672800 processing batch 4 for step rightHand
+INFO 2025-05-20 01:10:33,461 consumers [Processing] Client 1948402672800 validation failed for rightHand
+INFO 2025-05-20 01:10:34,155 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:10:34,155 consumers [Processing] Client 1948402672800 processing batch 5 for step rightHand
+INFO 2025-05-20 01:10:34,587 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:11:09,350 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:11:09,351 consumers [Processing] Client 1948402672800 processing batch 1 for step rightHand
+INFO 2025-05-20 01:11:09,882 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:11:10,378 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:11:10,379 consumers [Processing] Client 1948402672800 processing batch 2 for step rightHand
+INFO 2025-05-20 01:11:10,553 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:11:11,480 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:11:11,482 consumers [Processing] Client 1948402672800 processing batch 3 for step rightHand
+INFO 2025-05-20 01:11:11,651 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:11:12,499 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:11:12,499 consumers [Processing] Client 1948402672800 processing batch 4 for step rightHand
+INFO 2025-05-20 01:11:12,701 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:11:13,547 consumers [WebSocket] Client 1948402672800 received message type: frames
+INFO 2025-05-20 01:11:13,547 consumers [Processing] Client 1948402672800 processing batch 5 for step rightHand
+INFO 2025-05-20 01:11:13,708 consumers [Processing] Client 1948402672800 validation successful for rightHand
+INFO 2025-05-20 01:12:40,992 consumers [WebSocket] Client 1948402672800 disconnected with code: None
+INFO 2025-05-20 01:12:41,018 consumers [WebSocket] Client 1948402672800 model resources cleaned up
+INFO 2025-05-20 01:12:41,308 consumers [WebSocket] Client 1948402679136 attempting to connect
+INFO 2025-05-20 01:12:41,517 consumers [WebSocket] Client 1948402679136 connected successfully and models initialized
+INFO 2025-05-20 01:12:44,317 consumers [WebSocket] Client 1948402673136 attempting to connect
+INFO 2025-05-20 01:12:44,563 consumers [WebSocket] Client 1948402673136 connected successfully and models initialized
+INFO 2025-05-20 01:12:56,453 consumers [WebSocket] Client 1948402673136 disconnected with code: None
+INFO 2025-05-20 01:12:56,468 consumers [WebSocket] Client 1948402673136 model resources cleaned up
+INFO 2025-05-20 01:12:56,775 consumers [WebSocket] Client 1948402676736 attempting to connect
+INFO 2025-05-20 01:12:56,967 consumers [WebSocket] Client 1948402676736 connected successfully and models initialized
+INFO 2025-05-20 01:13:00,753 consumers [WebSocket] Client 1948402018304 attempting to connect
+INFO 2025-05-20 01:13:00,928 consumers [WebSocket] Client 1948402018304 connected successfully and models initialized
+INFO 2025-05-20 01:13:34,510 consumers [WebSocket] Client 1948402018304 received message type: frames
+INFO 2025-05-20 01:13:34,511 consumers [Processing] Client 1948402018304 processing batch 1 for step rightHand
+WARNING 2025-05-20 01:13:34,527 consumers [Processing] Client 1948402018304 no pose landmarks detected
+INFO 2025-05-20 01:13:35,519 consumers [WebSocket] Client 1948402018304 received message type: frames
+INFO 2025-05-20 01:13:35,519 consumers [Processing] Client 1948402018304 processing batch 2 for step rightHand
+WARNING 2025-05-20 01:13:35,551 consumers [Processing] Client 1948402018304 no pose landmarks detected
+INFO 2025-05-20 01:13:36,601 consumers [WebSocket] Client 1948402018304 received message type: frames
+INFO 2025-05-20 01:13:36,601 consumers [Processing] Client 1948402018304 processing batch 3 for step rightHand
+WARNING 2025-05-20 01:13:36,630 consumers [Processing] Client 1948402018304 no pose landmarks detected
+INFO 2025-05-20 01:13:37,625 consumers [WebSocket] Client 1948402018304 received message type: frames
+INFO 2025-05-20 01:13:37,625 consumers [Processing] Client 1948402018304 processing batch 4 for step rightHand
+WARNING 2025-05-20 01:13:37,652 consumers [Processing] Client 1948402018304 no pose landmarks detected
+INFO 2025-05-20 01:13:38,701 consumers [WebSocket] Client 1948402018304 received message type: frames
+INFO 2025-05-20 01:13:38,701 consumers [Processing] Client 1948402018304 processing batch 5 for step rightHand
+WARNING 2025-05-20 01:13:38,732 consumers [Processing] Client 1948402018304 no pose landmarks detected
+INFO 2025-05-20 01:13:47,261 consumers [WebSocket] Client 1948402021904 disconnected with code: 1001
+INFO 2025-05-20 01:13:47,323 consumers [WebSocket] Client 1948402021904 model resources cleaned up
+INFO 2025-05-20 01:13:47,327 consumers [WebSocket] Client 1948402334928 disconnected with code: 1001
+INFO 2025-05-20 01:13:47,397 consumers [WebSocket] Client 1948402334928 model resources cleaned up
+INFO 2025-05-20 01:13:47,398 consumers [WebSocket] Client 1948402670064 disconnected with code: 1001
+INFO 2025-05-20 01:13:47,437 consumers [WebSocket] Client 1948402670064 model resources cleaned up
+INFO 2025-05-20 01:13:47,438 consumers [WebSocket] Client 1948402679136 disconnected with code: 1001
+INFO 2025-05-20 01:13:47,465 consumers [WebSocket] Client 1948402679136 model resources cleaned up
+INFO 2025-05-20 01:13:47,466 consumers [WebSocket] Client 1948402676736 disconnected with code: 1001
+INFO 2025-05-20 01:13:47,502 consumers [WebSocket] Client 1948402676736 model resources cleaned up
+INFO 2025-05-20 01:13:47,504 consumers [WebSocket] Client 1948402018304 disconnected with code: 1001
+INFO 2025-05-20 01:13:47,552 consumers [WebSocket] Client 1948402018304 model resources cleaned up
+WARNING 2025-05-20 01:13:47,958 log Unauthorized: /api/auth/user/
+WARNING 2025-05-20 01:13:48,000 log Unauthorized: /api/auth/user/
+INFO 2025-05-20 01:14:00,537 consumers [WebSocket] Client 1948409171776 attempting to connect
+INFO 2025-05-20 01:14:00,727 consumers [WebSocket] Client 1948409171776 connected successfully and models initialized
+INFO 2025-05-20 01:14:03,557 consumers [WebSocket] Client 1948409173168 attempting to connect
+INFO 2025-05-20 01:14:03,744 consumers [WebSocket] Client 1948409173168 connected successfully and models initialized
+INFO 2025-05-20 01:14:14,408 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:14:14,409 consumers [Processing] Client 1948409173168 processing batch 1 for step bothHands
+INFO 2025-05-20 01:14:14,841 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:14:15,521 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:14:15,522 consumers [Processing] Client 1948409173168 processing batch 2 for step bothHands
+INFO 2025-05-20 01:14:15,690 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:14:16,515 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:14:16,515 consumers [Processing] Client 1948409173168 processing batch 3 for step bothHands
+INFO 2025-05-20 01:14:16,677 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:14:17,530 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:14:17,530 consumers [Processing] Client 1948409173168 processing batch 4 for step bothHands
+INFO 2025-05-20 01:14:17,694 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:14:18,611 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:14:18,611 consumers [Processing] Client 1948409173168 processing batch 5 for step bothHands
+INFO 2025-05-20 01:14:18,774 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:16:06,788 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:06,788 consumers [Processing] Client 1948409173168 processing batch 1 for step bothHands
+INFO 2025-05-20 01:16:07,171 consumers [Processing] Client 1948409173168 validation failed for bothHands
+INFO 2025-05-20 01:16:07,977 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:07,977 consumers [Processing] Client 1948409173168 processing batch 2 for step bothHands
+INFO 2025-05-20 01:16:08,353 consumers [Processing] Client 1948409173168 validation failed for bothHands
+INFO 2025-05-20 01:16:09,012 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:09,012 consumers [Processing] Client 1948409173168 processing batch 3 for step bothHands
+INFO 2025-05-20 01:16:09,389 consumers [Processing] Client 1948409173168 validation failed for bothHands
+INFO 2025-05-20 01:16:10,129 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:10,129 consumers [Processing] Client 1948409173168 processing batch 4 for step bothHands
+INFO 2025-05-20 01:16:10,506 consumers [Processing] Client 1948409173168 validation failed for bothHands
+INFO 2025-05-20 01:16:11,149 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:11,149 consumers [Processing] Client 1948409173168 processing batch 5 for step bothHands
+INFO 2025-05-20 01:16:11,309 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:16:39,514 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:39,514 consumers [Processing] Client 1948409173168 processing batch 1 for step bothHands
+INFO 2025-05-20 01:16:39,903 consumers [Processing] Client 1948409173168 validation failed for bothHands
+INFO 2025-05-20 01:16:40,554 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:40,554 consumers [Processing] Client 1948409173168 processing batch 2 for step bothHands
+INFO 2025-05-20 01:16:40,947 consumers [Processing] Client 1948409173168 validation failed for bothHands
+INFO 2025-05-20 01:16:41,595 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:41,596 consumers [Processing] Client 1948409173168 processing batch 3 for step bothHands
+INFO 2025-05-20 01:16:41,763 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:16:42,771 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:42,771 consumers [Processing] Client 1948409173168 processing batch 4 for step bothHands
+INFO 2025-05-20 01:16:42,951 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:16:43,787 consumers [WebSocket] Client 1948409173168 received message type: frames
+INFO 2025-05-20 01:16:43,787 consumers [Processing] Client 1948409173168 processing batch 5 for step bothHands
+INFO 2025-05-20 01:16:43,949 consumers [Processing] Client 1948409173168 validation successful for bothHands
+INFO 2025-05-20 01:17:47,459 consumers [WebSocket] Client 1948409173168 disconnected with code: None
+INFO 2025-05-20 01:17:47,478 consumers [WebSocket] Client 1948409173168 model resources cleaned up
+INFO 2025-05-20 01:17:47,769 consumers [WebSocket] Client 1948407367040 attempting to connect
+INFO 2025-05-20 01:17:47,954 consumers [WebSocket] Client 1948407367040 connected successfully and models initialized
+INFO 2025-05-20 01:17:51,754 consumers [WebSocket] Client 1948409169184 attempting to connect
+INFO 2025-05-20 01:17:51,953 consumers [WebSocket] Client 1948409169184 connected successfully and models initialized
+INFO 2025-05-20 01:18:11,448 consumers [WebSocket] Client 1948409169184 disconnected with code: None
+INFO 2025-05-20 01:18:11,464 consumers [WebSocket] Client 1948409169184 model resources cleaned up
+INFO 2025-05-20 01:18:11,773 consumers [WebSocket] Client 1948409171200 attempting to connect
+INFO 2025-05-20 01:18:11,947 consumers [WebSocket] Client 1948409171200 connected successfully and models initialized
+INFO 2025-05-20 01:18:15,749 consumers [WebSocket] Client 1948407378080 attempting to connect
+INFO 2025-05-20 01:18:15,940 consumers [WebSocket] Client 1948407378080 connected successfully and models initialized
+INFO 2025-05-20 01:18:18,971 server Killed 4 pending application instances
+INFO 2025-05-20 01:18:32,376 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:18:32,383 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 01:18:32,383 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:18:32,383 server Listening on TCP address 127.0.0.1:8000
+INFO 2025-05-20 01:18:32,472 consumers Client 2266103427184 attempting to connect
+INFO 2025-05-20 01:18:32,664 consumers Client 2266103427184 connected successfully and models initialized
+INFO 2025-05-20 01:18:32,689 consumers Client 2266109306256 attempting to connect
+INFO 2025-05-20 01:18:32,877 consumers Client 2266109306256 connected successfully and models initialized
+INFO 2025-05-20 01:18:32,894 consumers Client 2266109310240 attempting to connect
+INFO 2025-05-20 01:18:33,100 consumers Client 2266109310240 connected successfully and models initialized
+INFO 2025-05-20 01:18:34,748 consumers Client 2266109675312 attempting to connect
+INFO 2025-05-20 01:18:34,946 consumers Client 2266109675312 connected successfully and models initialized
+INFO 2025-05-20 01:18:55,065 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:18:55,065 consumers Client 2266109675312 - Processing batch 1 for rightHand
+INFO 2025-05-20 01:18:55,246 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:18:56,095 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:18:56,096 consumers Client 2266109675312 - Processing batch 2 for rightHand
+INFO 2025-05-20 01:18:56,265 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:18:57,075 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:18:57,086 consumers Client 2266109675312 - Processing batch 3 for rightHand
+INFO 2025-05-20 01:18:57,256 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:18:58,201 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:18:58,203 consumers Client 2266109675312 - Processing batch 4 for rightHand
+INFO 2025-05-20 01:18:58,371 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:18:59,308 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:18:59,309 consumers Client 2266109675312 - Processing batch 5 for rightHand
+INFO 2025-05-20 01:18:59,476 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:20:29,010 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:20:29,010 consumers Client 2266109675312 - Processing batch 1 for rightHand
+INFO 2025-05-20 01:20:29,413 consumers Client 2266109675312 - rightHand validation failed
+INFO 2025-05-20 01:20:30,095 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:20:30,096 consumers Client 2266109675312 - Processing batch 2 for rightHand
+INFO 2025-05-20 01:20:30,292 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:20:31,044 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:20:31,045 consumers Client 2266109675312 - Processing batch 3 for rightHand
+INFO 2025-05-20 01:20:31,230 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:20:32,153 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:20:32,153 consumers Client 2266109675312 - Processing batch 4 for rightHand
+INFO 2025-05-20 01:20:32,335 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:20:33,275 consumers [WebSocket] Client 2266109675312 received message type: frames
+INFO 2025-05-20 01:20:33,275 consumers Client 2266109675312 - Processing batch 5 for rightHand
+INFO 2025-05-20 01:20:33,482 consumers Client 2266109675312 - rightHand validation successful
+INFO 2025-05-20 01:26:05,042 consumers [WebSocket] Client 2266109675312 disconnected with code: None
+INFO 2025-05-20 01:26:05,067 consumers [WebSocket] Client 2266109675312 model resources cleaned up
+INFO 2025-05-20 01:26:08,353 consumers Client 2266824649760 attempting to connect
+INFO 2025-05-20 01:26:08,617 consumers Client 2266824649760 connected successfully and models initialized
+WARNING 2025-05-20 01:26:18,128 log Unauthorized: /api/candidate/
+WARNING 2025-05-20 01:26:18,156 log Unauthorized: /api/candidate/
+INFO 2025-05-20 01:26:18,167 consumers [WebSocket] Client 2266103427184 disconnected with code: 1001
+INFO 2025-05-20 01:26:18,190 consumers [WebSocket] Client 2266103427184 model resources cleaned up
+INFO 2025-05-20 01:26:18,191 consumers [WebSocket] Client 2266109310240 disconnected with code: 1001
+INFO 2025-05-20 01:26:18,214 consumers [WebSocket] Client 2266109310240 model resources cleaned up
+INFO 2025-05-20 01:26:18,215 consumers [WebSocket] Client 2266109306256 disconnected with code: 1001
+INFO 2025-05-20 01:26:18,254 consumers [WebSocket] Client 2266109306256 model resources cleaned up
+INFO 2025-05-20 01:26:18,256 consumers [WebSocket] Client 2266824649760 disconnected with code: 1001
+INFO 2025-05-20 01:26:18,307 consumers [WebSocket] Client 2266824649760 model resources cleaned up
+WARNING 2025-05-20 01:26:26,780 log Unauthorized: /api/auth/login/
+WARNING 2025-05-20 01:26:34,561 log Unauthorized: /api/auth/login/
+INFO 2025-05-20 01:27:05,132 consumers Client 2266822367344 attempting to connect
+INFO 2025-05-20 01:27:05,330 consumers Client 2266822367344 connected successfully and models initialized
+INFO 2025-05-20 01:27:08,752 consumers Client 2266111208000 attempting to connect
+INFO 2025-05-20 01:27:08,944 consumers Client 2266111208000 connected successfully and models initialized
+INFO 2025-05-20 01:28:15,689 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:28:15,690 consumers Client 2266111208000 - Processing batch 1 for leftHand
+INFO 2025-05-20 01:28:16,069 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:28:16,789 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:28:16,790 consumers Client 2266111208000 - Processing batch 2 for leftHand
+INFO 2025-05-20 01:28:17,152 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:28:17,774 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:28:17,775 consumers Client 2266111208000 - Processing batch 3 for leftHand
+INFO 2025-05-20 01:28:18,147 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:28:18,904 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:28:18,904 consumers Client 2266111208000 - Processing batch 4 for leftHand
+INFO 2025-05-20 01:28:19,277 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:28:19,882 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:28:19,883 consumers Client 2266111208000 - Processing batch 5 for leftHand
+INFO 2025-05-20 01:28:20,257 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:29:59,499 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:29:59,499 consumers Client 2266111208000 - Processing batch 1 for leftHand
+INFO 2025-05-20 01:29:59,898 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:30:00,549 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:30:00,549 consumers Client 2266111208000 - Processing batch 2 for leftHand
+INFO 2025-05-20 01:30:00,941 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:30:01,668 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:30:01,669 consumers Client 2266111208000 - Processing batch 3 for leftHand
+INFO 2025-05-20 01:30:02,049 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:30:02,716 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:30:02,716 consumers Client 2266111208000 - Processing batch 4 for leftHand
+INFO 2025-05-20 01:30:03,121 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:30:03,713 consumers [WebSocket] Client 2266111208000 received message type: frames
+INFO 2025-05-20 01:30:03,715 consumers Client 2266111208000 - Processing batch 5 for leftHand
+INFO 2025-05-20 01:30:04,092 consumers Client 2266111208000 - leftHand validation failed
+INFO 2025-05-20 01:30:37,875 server Killed 2 pending application instances
+INFO 2025-05-20 01:31:15,063 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:31:15,063 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 01:31:15,063 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:31:15,063 server Listening on TCP address 127.0.0.1:8000
+WARNING 2025-05-20 01:42:19,029 log Unauthorized: /api/auth/logout/
+INFO 2025-05-20 01:49:25,382 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:49:25,382 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 01:49:25,382 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:49:25,382 server Listening on TCP address 127.0.0.1:8000
+INFO 2025-05-20 01:56:30,307 server Killed 0 pending application instances
+INFO 2025-05-20 01:57:04,908 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:57:04,908 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 01:57:04,908 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 01:57:04,908 server Listening on TCP address 127.0.0.1:8000
+WARNING 2025-05-20 01:57:26,265 log Unauthorized: /api/auth/user/
+WARNING 2025-05-20 01:57:26,292 log Unauthorized: /api/auth/user/
+INFO 2025-05-20 02:02:29,163 server Killed 2 pending application instances
+INFO 2025-05-20 02:02:54,847 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 02:02:54,847 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 02:02:54,847 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 02:02:54,847 server Listening on TCP address 127.0.0.1:8000
+INFO 2025-05-20 02:14:41,785 server Killed 4 pending application instances
+INFO 2025-05-20 02:14:55,676 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 02:14:55,676 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 02:14:55,676 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 02:14:55,676 server Listening on TCP address 127.0.0.1:8000
+WARNING 2025-05-20 02:27:02,691 log Unauthorized: /api/auth/user/
+WARNING 2025-05-20 02:27:02,736 log Unauthorized: /api/auth/user/
+WARNING 2025-05-20 02:41:13,080 log Unauthorized: /api/auth/user/
+WARNING 2025-05-20 02:41:13,105 log Unauthorized: /api/auth/user/
