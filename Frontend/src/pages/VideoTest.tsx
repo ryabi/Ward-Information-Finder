@@ -114,13 +114,17 @@ const VideoTest: React.FC = () => {
   // Keep currentStepRef in sync with currentStep state
   useEffect(() => {
     currentStepRef.current = currentStep;
-    console.log('Current step changed to:', currentStep);
+    console.log('[State Change] Current step changed to:', currentStep);
   }, [currentStep]);
 
   // Initialize randomized sequences
   useEffect(() => {
-    setRandomizedHandSteps(shuffleArray(HAND_RAISE_STEPS));
-    setRandomizedGestures(shuffleArray(GESTURES));
+    const shuffledHandSteps = shuffleArray(HAND_RAISE_STEPS);
+    const shuffledGestures = shuffleArray(GESTURES);
+    console.log('[Initialization] Randomized hand steps:', shuffledHandSteps);
+    console.log('[Initialization] Randomized gestures:', shuffledGestures);
+    setRandomizedHandSteps(shuffledHandSteps);
+    setRandomizedGestures(shuffledGestures);
   }, []);
 
   useEffect(() => {
@@ -130,14 +134,18 @@ const VideoTest: React.FC = () => {
   }, []);
 
   const cleanup = () => {
+    console.log('[Cleanup] Starting cleanup process');
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
+      console.log('[Cleanup] Camera tracks stopped');
     }
     if (frameIntervalRef.current) {
       clearInterval(frameIntervalRef.current);
+      console.log('[Cleanup] Frame capture interval cleared');
     }
     if (sendIntervalRef.current) {
       clearInterval(sendIntervalRef.current);
+      console.log('[Cleanup] Send interval cleared');
     }
     setIsCapturing(false);
     setIsCameraActive(false);
@@ -145,26 +153,31 @@ const VideoTest: React.FC = () => {
     startTimeRef.current = 0;
     batchNumberRef.current = 0;
     frameBufferRef.current = [];
+    console.log('[Cleanup] Cleanup completed');
   };
 
   const captureFrame = async (): Promise<string | null> => {
-    if (!videoRef.current || !canvasRef.current) return null;
+    if (!videoRef.current || !canvasRef.current) {
+      console.log('[Frame Capture] Failed - video or canvas ref not available');
+      return null;
+    }
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     
-    if (!context) return null;
+    if (!context) {
+      console.log('[Frame Capture] Failed - could not get canvas context');
+      return null;
+    }
 
-    // Set canvas dimensions to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    
-    // Draw the current video frame to canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Convert to base64 JPEG
-    return canvas.toDataURL('image/jpeg', 0.8);
+    const frame = canvas.toDataURL('image/jpeg', 0.8);
+    console.log('[Frame Capture] Frame captured successfully');
+    return frame;
   };
 
   const selectFramesToSend = (frames: string[]): string[] => {
@@ -219,23 +232,24 @@ const VideoTest: React.FC = () => {
   // WebSocket connection setup
   useEffect(() => {
     const connectWebSocket = () => {
+      console.log('[WebSocket] Attempting to connect...');
       const ws = new WebSocket('ws://localhost:8000/ws/video/');
       
       ws.onopen = () => {
-        console.log('WebSocket connected');
+        console.log('[WebSocket] Connection established');
         setWsStatus('connected');
         setError('');
       };
 
       ws.onclose = () => {
-        console.log('WebSocket disconnected');
+        console.log('[WebSocket] Connection closed');
         setWsStatus('disconnected');
         // Attempt to reconnect after 3 seconds
         setTimeout(connectWebSocket, 3000);
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error('[WebSocket] Connection error:', error);
         setWsStatus('disconnected');
         setError('WebSocket connection error. Please try again.');
       };
@@ -243,13 +257,14 @@ const VideoTest: React.FC = () => {
       ws.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
+          console.log('[WebSocket] Received message:', message);
           if (message.type === 'validation_result') {
             handleValidationResult(message.data);
           } else if (message.type === 'error') {
             setError(message.data.message || 'An error occurred');
           }
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
+          console.error('[WebSocket] Error parsing message:', error);
         }
       };
 
@@ -260,13 +275,16 @@ const VideoTest: React.FC = () => {
 
     return () => {
       if (wsRef.current) {
+        console.log('[WebSocket] Closing connection on cleanup');
         wsRef.current.close();
       }
     };
   }, []);
 
   const handleValidationResult = (data: WebSocketMessage['data']) => {
+    console.log('[Validation] Received validation result:', data);
     if (data.validation === 'validated') {
+      console.log(`[Validation] Step ${currentStepRef.current} validated successfully`);
       if (currentStepRef.current === 'leftHand') {
         stopCapturing();
         resetValidationState();
@@ -305,13 +323,14 @@ const VideoTest: React.FC = () => {
 
   const sendFrameBatch = async (batch: FrameBatch) => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
-      console.error('WebSocket is not connected');
+      console.error('[WebSocket] Failed to send batch - WebSocket not connected');
       setError('WebSocket connection not established. Please try again.');
       return;
     }
 
     try {
       const selectedFrames = selectFramesToSend(batch.frames);
+      console.log(`[WebSocket] Sending batch ${batch.batch_number} with ${selectedFrames.length} frames`);
       
       const message: WebSocketMessage = {
         type: 'frames',
@@ -325,14 +344,16 @@ const VideoTest: React.FC = () => {
       };
 
       wsRef.current.send(JSON.stringify(message));
+      console.log('[WebSocket] Batch sent successfully');
     } catch (err) {
-      console.error('Failed to send frame batch:', err);
+      console.error('[WebSocket] Failed to send frame batch:', err);
       setStatus('Failed to send frames');
     }
   };
 
   const startCamera = async () => {
     try {
+      console.log('[Camera] Starting camera initialization');
       setError('');
       setIsLoading(true);
       setStatus('Initializing camera...');
@@ -348,14 +369,16 @@ const VideoTest: React.FC = () => {
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        console.log('[Camera] Video stream attached to video element');
       }
       streamRef.current = stream;
       setStatus('Camera ready');
       setIsCameraActive(true);
       setCurrentStep('ready');
+      console.log('[Camera] Camera initialized successfully');
 
     } catch (err) {
-      console.error('Error accessing media devices:', err);
+      console.error('[Camera] Error accessing media devices:', err);
       setError('Failed to access camera. Please ensure you have granted camera permissions.');
     } finally {
       setIsLoading(false);
@@ -364,14 +387,17 @@ const VideoTest: React.FC = () => {
 
   const startValidation = () => {
     if (!streamRef.current) {
+      console.error('[Validation] Failed to start - camera not initialized');
       setError('Camera not initialized');
       return;
     }
 
+    console.log('[Validation] Starting validation process');
     resetValidationState();
     setCurrentStepIndex(0);
     setCurrentStep(randomizedHandSteps[0]);
     const firstStep = randomizedHandSteps[0];
+    console.log(`[Validation] First step set to: ${firstStep}`);
     setStatus(`Please ${firstStep === 'bothHands' ? 'raise both hands' : `raise your ${firstStep.replace('Hand', ' hand')}`} ${ACTION_SYMBOLS[firstStep]}`);
     startCapturing();
   };
@@ -404,10 +430,12 @@ const VideoTest: React.FC = () => {
 
   const startCapturing = () => {
     if (wsStatus !== 'connected') {
+      console.error('[Capture] Failed to start - WebSocket not connected');
       setError('WebSocket connection not established. Please try again.');
       return;
     }
 
+    console.log('[Capture] Starting capture process');
     setIsCapturing(true);
     frameBufferRef.current = [];
     batchNumberRef.current = 0;
@@ -416,6 +444,7 @@ const VideoTest: React.FC = () => {
     setCountdown(3);
     
     setTimeout(() => {
+      console.log('[Capture] Starting frame capture');
       startTimeRef.current = Date.now();
       setStatus('Capturing and validating...');
       setCountdown(null);
@@ -436,6 +465,7 @@ const VideoTest: React.FC = () => {
           const elapsedTime = currentTime - startTimeRef.current;
           
           if (elapsedTime >= MAX_VALIDATION_TIME) {
+            console.log('[Capture] Validation timeout reached');
             stopCapturing();
             resetValidationState();
             setStatus('Validation timeout. Please try again.');

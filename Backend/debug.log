@@ -1,0 +1,18 @@
+INFO 2025-05-20 00:33:44,413 cli Starting server at tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 00:33:44,413 server HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+INFO 2025-05-20 00:33:44,413 server Configuring endpoint tcp:port=8000:interface=127.0.0.1
+INFO 2025-05-20 00:33:44,413 server Listening on TCP address 127.0.0.1:8000
+INFO 2025-05-20 00:34:10,437 consumers [WebSocket] Client attempting to connect
+INFO 2025-05-20 00:34:10,438 consumers [WebSocket] Client connected successfully
+INFO 2025-05-20 00:34:13,453 consumers [WebSocket] Client attempting to connect
+INFO 2025-05-20 00:34:13,453 consumers [WebSocket] Client connected successfully
+INFO 2025-05-20 00:34:43,662 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:34:43,673 consumers [Processing] Processing batch 1 for step leftHand
+INFO 2025-05-20 00:34:44,671 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:34:44,671 consumers [Processing] Processing batch 2 for step leftHand
+INFO 2025-05-20 00:34:45,766 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:34:45,766 consumers [Processing] Processing batch 3 for step leftHand
+INFO 2025-05-20 00:34:46,806 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:34:46,806 consumers [Processing] Processing batch 4 for step leftHand
+INFO 2025-05-20 00:34:47,871 consumers [WebSocket] Received message type: frames
+INFO 2025-05-20 00:34:47,871 consumers [Processing] Processing batch 5 for step leftHand
