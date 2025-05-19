@@ -47,8 +47,7 @@ class Candidate(APIView):
         serializer=candidateSerializer(query_sets,many=True)
        
         return Response(serializer.data,status=status.HTTP_200_OK)
-      
-            
+
         
             
             

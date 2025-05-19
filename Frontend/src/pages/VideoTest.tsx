@@ -61,6 +61,19 @@ interface FrameBatch {
   batch_number: number;
 }
 
+interface WebSocketMessage {
+  type: 'frames' | 'validation_result' | 'error';
+  data: {
+    frames?: string[];
+    validation_step?: ValidationStep;
+    timestamp?: number;
+    batch_number?: number;
+    gesture_recognize?: boolean;
+    validation?: string;
+    message?: string;
+  };
+}
+
 const VideoTest: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -71,6 +84,8 @@ const VideoTest: React.FC = () => {
   const batchNumberRef = useRef<number>(0);
   const currentStepRef = useRef<ValidationStep>('initial');
   const frameBufferRef = useRef<string[]>([]);
+  const wsRef = useRef<WebSocket | null>(null);
+  const [wsStatus, setWsStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   
   const [currentStep, setCurrentStep] = useState<ValidationStep>('initial');
   const [confirmationState, setConfirmationState] = useState<ConfirmationState>('none');
@@ -201,68 +216,118 @@ const VideoTest: React.FC = () => {
     return currentIndex < GESTURES.length - 1 ? GESTURES[currentIndex + 1] : null;
   };
 
+  // WebSocket connection setup
+  useEffect(() => {
+    const connectWebSocket = () => {
+      const ws = new WebSocket('ws://localhost:8000/ws/video/');
+      
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        setWsStatus('connected');
+        setError('');
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket disconnected');
+        setWsStatus('disconnected');
+        // Attempt to reconnect after 3 seconds
+        setTimeout(connectWebSocket, 3000);
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        setWsStatus('disconnected');
+        setError('WebSocket connection error. Please try again.');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const message: WebSocketMessage = JSON.parse(event.data);
+          if (message.type === 'validation_result') {
+            handleValidationResult(message.data);
+          } else if (message.type === 'error') {
+            setError(message.data.message || 'An error occurred');
+          }
+        } catch (error) {
+          console.error('Error parsing WebSocket message:', error);
+        }
+      };
+
+      wsRef.current = ws;
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
+
+  const handleValidationResult = (data: WebSocketMessage['data']) => {
+    if (data.validation === 'validated') {
+      if (currentStepRef.current === 'leftHand') {
+        stopCapturing();
+        resetValidationState();
+        setShowPrompt(true);
+        setPromptMessage('Left hand validated successfully! Ready for right hand validation?');
+        setShowNextButton(true);
+      } else if (currentStepRef.current === 'rightHand') {
+        stopCapturing();
+        resetValidationState();
+        setShowPrompt(true);
+        setPromptMessage('Right hand validated successfully! Ready to validate both hands?');
+        setShowNextButton(true);
+      } else if (currentStepRef.current === 'bothHands') {
+        stopCapturing();
+        resetValidationState();
+        setShowPrompt(true);
+        setPromptMessage('Hand raise validation completed! Ready to start gesture validation?');
+        setShowNextButton(true);
+      } else if (isGestureStep(currentStepRef.current)) {
+        stopCapturing();
+        resetValidationState();
+        const nextGesture = getNextGesture(currentStepRef.current as GestureType);
+        if (nextGesture) {
+          setShowPrompt(true);
+          setPromptMessage(`${currentStepRef.current} gesture validated! Ready for next gesture?`);
+          setShowNextButton(true);
+        } else {
+          setShowPrompt(true);
+          setPromptMessage('All validations completed successfully!');
+          setShowNextButton(true);
+          setCurrentStep('completed');
+        }
+      }
+    }
+  };
+
   const sendFrameBatch = async (batch: FrameBatch) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.error('WebSocket is not connected');
+      setError('WebSocket connection not established. Please try again.');
+      return;
+    }
+
     try {
       const selectedFrames = selectFramesToSend(batch.frames);
       
-      const response = await fetch('/api/validate/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const message: WebSocketMessage = {
+        type: 'frames',
+        data: {
           frames: selectedFrames,
           validation_step: currentStepRef.current,
           timestamp: batch.timestamp,
           batch_number: batch.batch_number,
           gesture_recognize: isGestureStep(currentStepRef.current)
-        }),
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-      
-      const result = await response.json();
-      console.log('Received validation result:', result);
-      
-      if (result.validation === 'validated') {
-        if (currentStepRef.current === 'leftHand') {
-          stopCapturing();
-          resetValidationState();
-          setShowPrompt(true);
-          setPromptMessage('Left hand validated successfully! Ready for right hand validation?');
-          setShowNextButton(true);
-        } else if (currentStepRef.current === 'rightHand') {
-          stopCapturing();
-          resetValidationState();
-          setShowPrompt(true);
-          setPromptMessage('Right hand validated successfully! Ready to validate both hands?');
-          setShowNextButton(true);
-        } else if (currentStepRef.current === 'bothHands') {
-          stopCapturing();
-          resetValidationState();
-          setShowPrompt(true);
-          setPromptMessage('Hand raise validation completed! Ready to start gesture validation?');
-          setShowNextButton(true);
-        } else if (isGestureStep(currentStepRef.current)) {
-          stopCapturing();
-          resetValidationState();
-          const nextGesture = getNextGesture(currentStepRef.current as GestureType);
-          if (nextGesture) {
-            setShowPrompt(true);
-            setPromptMessage(`${currentStepRef.current} gesture validated! Ready for next gesture?`);
-            setShowNextButton(true);
-          } else {
-            setShowPrompt(true);
-            setPromptMessage('All validations completed successfully!');
-            setShowNextButton(true);
-            setCurrentStep('completed');
-          }
         }
-      }
-      
+      };
+
+      wsRef.current.send(JSON.stringify(message));
     } catch (err) {
-      console.error('Failed to upload frame batch:', err);
-      setStatus('Failed to upload frames');
+      console.error('Failed to send frame batch:', err);
+      setStatus('Failed to send frames');
     }
   };
 
@@ -338,19 +403,23 @@ const VideoTest: React.FC = () => {
   };
 
   const startCapturing = () => {
+    if (wsStatus !== 'connected') {
+      setError('WebSocket connection not established. Please try again.');
+      return;
+    }
+
     setIsCapturing(true);
     frameBufferRef.current = [];
     batchNumberRef.current = 0;
     
     setStatus('Get ready... Starting in 3 seconds');
-    setCountdown(3); // Start 3 second countdown
+    setCountdown(3);
     
     setTimeout(() => {
       startTimeRef.current = Date.now();
       setStatus('Capturing and validating...');
-      setCountdown(null); // Clear countdown
+      setCountdown(null);
       
-      // Start frame capture interval
       frameIntervalRef.current = window.setInterval(async () => {
         const frame = await captureFrame();
         if (frame) {
@@ -358,13 +427,11 @@ const VideoTest: React.FC = () => {
         }
       }, FRAME_INTERVAL);
 
-      // Start send interval with precise timing
       let lastSendTime = Date.now();
       sendIntervalRef.current = window.setInterval(async () => {
         const currentTime = Date.now();
         const timeSinceLastSend = currentTime - lastSendTime;
         
-        // Only send if at least 1 second has passed
         if (timeSinceLastSend >= SEND_INTERVAL) {
           const elapsedTime = currentTime - startTimeRef.current;
           
@@ -384,11 +451,11 @@ const VideoTest: React.FC = () => {
               batch_number: batchNumberRef.current
             };
             frameBufferRef.current = [];
-            lastSendTime = currentTime;  // Update last send time
+            lastSendTime = currentTime;
             await sendFrameBatch(batch);
           }
         }
-      }, 100); // Check more frequently but only send every SEND_INTERVAL
+      }, 100);
     }, READY_DELAY);
   };
 
@@ -483,6 +550,24 @@ const VideoTest: React.FC = () => {
         setCurrentStep('completed');
       }
     }
+  };
+
+  // Add WebSocket status indicator to the UI
+  const renderWebSocketStatus = () => {
+    if (wsStatus === 'connecting') {
+      return (
+        <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+          Connecting...
+        </div>
+      );
+    } else if (wsStatus === 'disconnected') {
+      return (
+        <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+          Disconnected
+        </div>
+      );
+    }
+    return null;
   };
 
   const renderContent = () => {
@@ -609,6 +694,8 @@ const VideoTest: React.FC = () => {
             
             {/* Camera controls overlay */}
             <div className="absolute inset-0">
+              {renderWebSocketStatus()}
+              
               {/* Initial countdown timer */}
               {countdown !== null && countdown > 0 && (
                 <div className="absolute inset-0 flex items-center justify-center">
