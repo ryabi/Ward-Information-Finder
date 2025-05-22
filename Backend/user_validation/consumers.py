@@ -99,7 +99,7 @@ class ValidateUser(AsyncWebsocketConsumer):
             self.pose_landmarker = self.PoseLandmarker.create_from_options(self.pose_options)
             self.gesture_recognizer = self.GestureRecognizer.create_from_options(self.gesture_options)
 
-            awai~t self.accept()
+            await self.accept()
             logger.info(f"Client {self.client_id} connected successfully and models initialized")
         except Exception as e:
             logger.error(f"Client {self.client_id} error during connection: {str(e)}")

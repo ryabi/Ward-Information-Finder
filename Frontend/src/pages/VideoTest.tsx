@@ -65,7 +65,7 @@ interface FrameBatch {
 }
 
 interface WebSocketMessage {
-  type: 'frames' | 'validation_result' | 'error';
+  type: 'frames' | 'validation_result' | 'error' | 'connection_status';
   data: {
     frames?: string[];
     validation_step?: ValidationStep;
@@ -74,6 +74,7 @@ interface WebSocketMessage {
     gesture_recognize?: boolean;
     validation?: string;
     message?: string;
+    status?: string;
   };
 }
 
@@ -112,6 +113,9 @@ const VideoTest: React.FC = () => {
   const FRAMES_TO_SEND = 10; // Send 10 frames per second
   const FRAME_INTERVAL = Math.floor(1000 / FRAME_RATE); // ~41.67ms between captures
   const SEND_INTERVAL = 1000; // Send batch every second
+
+  let reconnectAttempts = 0;
+  const MAX_RECONNECT_ATTEMPTS = 3;
 
   // Keep currentStepRef in sync with currentStep state
   useEffect(() => {
@@ -233,19 +237,31 @@ const VideoTest: React.FC = () => {
   useEffect(() => {
     const connectWebSocket = () => {
       console.log('[WebSocket] Attempting to connect...');
-      const ws = new WebSocket('ws://localhost:8000/ws/video/');
+      setWsStatus('connecting');
+      
+      // Use Vite proxy instead of direct connection
+      const ws = new WebSocket('ws://localhost:5173/ws/video/');
       
       ws.onopen = () => {
         console.log('[WebSocket] Connection established');
         setWsStatus('connected');
         setError('');
+        reconnectAttempts = 0; // Reset reconnect attempts on successful connection
       };
 
-      ws.onclose = () => {
-        console.log('[WebSocket] Connection closed');
+      ws.onclose = (event) => {
+        console.log('[WebSocket] Connection closed', event.code, event.reason);
         setWsStatus('disconnected');
-        // Attempt to reconnect after 3 seconds
-        setTimeout(connectWebSocket, 3000);
+        
+        // Only attempt to reconnect if we haven't exceeded max attempts
+        if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+          reconnectAttempts++;
+          console.log(`[WebSocket] Attempting to reconnect (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...`);
+          setTimeout(connectWebSocket, 3000);
+        } else {
+          console.log('[WebSocket] Max reconnection attempts reached');
+          setError('Failed to establish WebSocket connection. Please refresh the page.');
+        }
       };
 
       ws.onerror = (error) => {
@@ -258,8 +274,12 @@ const VideoTest: React.FC = () => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
           
+          if (message.type === 'connection_status') {
+            console.log('[WebSocket] Connection status:', message.data.status);
+            return;
+          }
+          
           if (message.type === 'validation_result') {
-            // Log validation result specifically
             console.log('%c[Validation Result]', 'color: #FF9800; font-weight: bold', {
               validation: message.data.validation,
               step: message.data.validation_step,

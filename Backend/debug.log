@@ -357,3 +357,13 @@ WARNING 2025-05-20 02:27:02,691 log Unauthorized: /api/auth/user/
 WARNING 2025-05-20 02:27:02,736 log Unauthorized: /api/auth/user/
 WARNING 2025-05-20 02:41:13,080 log Unauthorized: /api/auth/user/
 WARNING 2025-05-20 02:41:13,105 log Unauthorized: /api/auth/user/
+INFO 2025-05-22 13:09:53,774 autoreload Watching for file changes with StatReloader
+WARNING 2025-05-22 14:06:00,567 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 14:06:00,594 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 14:27:04,907 log Unauthorized: /api/auth/logout/
+WARNING 2025-05-22 14:46:05,576 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 14:46:05,612 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 15:04:46,748 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 15:04:46,777 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 15:23:02,722 log Unauthorized: /api/auth/user/
+WARNING 2025-05-22 15:23:02,765 log Unauthorized: /api/auth/user/
